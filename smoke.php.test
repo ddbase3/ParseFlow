@@ -1,0 +1,71 @@
+<?php declare(strict_types=1);
+
+namespace Base3\Api {
+interface IBase { public static function getName(): string; }
+interface IPlugin { public function __construct(IContainer $container); public function init(); }
+interface IContainer { public const SHARED = 1; public function set(string $name, $classDefinition, $flags = 0): IContainer; public function get(string $name); }
+interface IClassMap { public function instantiate(string $class); public function generate($regenerate = false): void; public function getApps(); public function &getInstances(array $criteria = []); public function &getInstancesByInterface($interface); public function &getInstancesByAppInterface($app, $interface, $retry = false); public function &getInstanceByAppName($app, $name, $retry = false); public function &getInstanceByInterfaceName($interface, $name, $retry = false); public function &getInstanceByAppInterfaceName($app, $interface, $name, $retry = false); public function getPlugins(); }
+}
+
+namespace {
+$ordered = [
+	'src/Api/IParserSource.php','src/Api/IParserInput.php','src/Api/IParserOutput.php','src/Api/IParserTarget.php','src/Api/IParser.php','src/Api/IParserService.php',
+	'src/Exception/ParserException.php','src/Exception/ParserExecutionException.php','src/Exception/ParserPlanningException.php','src/Exception/ParserTargetException.php','src/Exception/UnsupportedParserRequestException.php','src/Exception/ParseFlowRuntimeException.php',
+];
+foreach (glob(__DIR__ . '/src/Dto/*.php') as $file) { $ordered[] = substr($file, strlen(__DIR__) + 1); }
+foreach (glob(__DIR__ . '/src/Source/*.php') as $file) { $ordered[] = substr($file, strlen(__DIR__) + 1); }
+foreach (glob(__DIR__ . '/src/Input/*.php') as $file) { $ordered[] = substr($file, strlen(__DIR__) + 1); }
+foreach (glob(__DIR__ . '/src/Output/*.php') as $file) { $ordered[] = substr($file, strlen(__DIR__) + 1); }
+foreach (glob(__DIR__ . '/src/Target/*.php') as $file) { $ordered[] = substr($file, strlen(__DIR__) + 1); }
+$ordered[] = 'src/Parser/AbstractSingleRouteParser.php';
+foreach (glob(__DIR__ . '/src/Parser/*/*Helper.php') as $file) { $ordered[] = substr($file, strlen(__DIR__) + 1); }
+foreach (glob(__DIR__ . '/src/Parser/*/*Parser.php') as $file) { if (!str_ends_with($file, 'Helper.php')) { $ordered[] = substr($file, strlen(__DIR__) + 1); } }
+foreach (glob(__DIR__ . '/src/Service/*.php') as $file) { $ordered[] = substr($file, strlen(__DIR__) + 1); }
+foreach ($ordered as $file) { require_once __DIR__ . '/' . $file; }
+
+class TestClassMap implements \Base3\Api\IClassMap {
+	private array $instances = [];
+	public function __construct() {
+		foreach (get_declared_classes() as $class) {
+			if (is_subclass_of($class, \ParseFlow\Api\IParser::class)) {
+				$ref = new \ReflectionClass($class);
+				if (!$ref->isAbstract()) { $this->instances[] = new $class(); }
+			}
+		}
+	}
+	public function instantiate(string $class) { return new $class(); }
+	public function generate($regenerate = false): void {}
+	public function getApps() { return []; }
+	public function &getInstances(array $criteria = []) { return $this->instances; }
+	public function &getInstancesByInterface($interface) { return $this->instances; }
+	public function &getInstancesByAppInterface($app, $interface, $retry = false) { return $this->instances; }
+	public function &getInstanceByAppName($app, $name, $retry = false) { $null = null; return $null; }
+	public function &getInstanceByInterfaceName($interface, $name, $retry = false) { foreach ($this->instances as $instance) { if ($instance::getName() === $name) { return $instance; } } $null = null; return $null; }
+	public function &getInstanceByAppInterfaceName($app, $interface, $name, $retry = false) { return $this->getInstanceByInterfaceName($interface, $name, $retry); }
+	public function getPlugins() { return []; }
+}
+
+$service = new \ParseFlow\Service\DefaultParserService(new TestClassMap());
+$report = $service->explore();
+assert(($report->metadata['parserCount'] ?? 0) >= 80);
+
+$markdown = "# Hello\n\nWorld\n";
+$result = $service->parse(new \ParseFlow\Dto\ParserRequest(
+	source: new \ParseFlow\Source\StringParserSource($markdown),
+	input: new \ParseFlow\Input\PlainTextParserInput('markdown'),
+	output: new \ParseFlow\Output\StringParserOutput('text'),
+	target: new \ParseFlow\Target\ReturnParserTarget()
+));
+assert(str_contains($result->getPayload()->getValue(), 'Hello'));
+
+$csv = "name,age\nAda,37\n";
+$result = $service->parse(new \ParseFlow\Dto\ParserRequest(
+	source: new \ParseFlow\Source\StringParserSource($csv),
+	input: new \ParseFlow\Input\PlainTextParserInput('csv'),
+	output: new \ParseFlow\Output\StructuredParserOutput('json'),
+	target: new \ParseFlow\Target\ReturnParserTarget()
+));
+assert(str_contains($result->getPayload()->getValue(), 'Ada'));
+
+echo "ok parserCount=" . ($report->metadata['parserCount'] ?? 0) . " routeCount=" . ($report->metadata['routeCount'] ?? 0) . "\n";
+}
