@@ -4,7 +4,13 @@ namespace Base3\Api {
 interface IBase { public static function getName(): string; }
 interface IPlugin { public function __construct(IContainer $container); public function init(); }
 interface IContainer { public const SHARED = 1; public function set(string $name, $classDefinition, $flags = 0): IContainer; public function get(string $name); }
+interface IAssetResolver { public function resolve(string $path): string; }
+interface IOutput extends IBase { public function getOutput(string $out = 'html', bool $final = false): string; }
 interface IClassMap { public function instantiate(string $class); public function generate($regenerate = false): void; public function getApps(); public function &getInstances(array $criteria = []); public function &getInstancesByInterface($interface); public function &getInstancesByAppInterface($app, $interface, $retry = false); public function &getInstanceByAppName($app, $name, $retry = false); public function &getInstanceByInterfaceName($interface, $name, $retry = false); public function &getInstanceByAppInterfaceName($app, $interface, $name, $retry = false); public function getPlugins(); }
+}
+
+namespace Base3\LinkTarget\Api {
+interface ILinkTargetService { public function getLink(array $target, array $params = []): string; }
 }
 
 namespace {

@@ -25,11 +25,14 @@ use ParseFlow\Dto\ParserRoute;
 use ParseFlow\Dto\ParserState;
 use ParseFlow\Dto\ParserStrategy;
 use ParseFlow\Exception\UnsupportedParserRequestException;
+use SplPriorityQueue;
 
 /**
  * Builds the cheapest parser plan with uniform-cost search.
  */
 class ParserPlanner {
+
+	private const MAX_NODE_EXPANSIONS = 5000;
 
 	public function __construct(
 		private readonly ParserRouteRegistry $registry,
@@ -43,14 +46,16 @@ class ParserPlanner {
 	 */
 	public function plan(ParserRequest $request, array $payloads, array $routes, ParserStrategy $strategy): ParserPlan {
 		$targetState = new ParserState($request->output->getType(), $request->output->getFormat());
+		$routeIndex = $this->buildRouteIndex($routes);
 		$bestPlan = null;
+		$warnings = [];
 
-		foreach ($payloads as $payload) {
-			$plan = $this->planFromPayload($request, $payload, $targetState, $routes, $strategy);
+		foreach($payloads as $payload) {
+			$plan = $this->planFromPayload($request, $payload, $targetState, $routeIndex, $strategy, $warnings);
 			$bestPlan = $this->chooseBetter($bestPlan, $plan);
 		}
 
-		if ($bestPlan === null) {
+		if($bestPlan === null) {
 			throw new UnsupportedParserRequestException('No parser plan found for requested source/output state.');
 		}
 
@@ -58,84 +63,162 @@ class ParserPlanner {
 	}
 
 	/**
-	 * @param ParserRoute[] $routes
+	 * @param array<string,ParserRoute[]> $routeIndex
+	 * @param string[] $warnings
 	 */
-	private function planFromPayload(ParserRequest $request, ParserPayload $payload, ParserState $targetState, array $routes, ParserStrategy $strategy): ?ParserPlan {
-		$queue = [[
+	private function planFromPayload(ParserRequest $request, ParserPayload $payload, ParserState $targetState, array $routeIndex, ParserStrategy $strategy, array &$warnings): ?ParserPlan {
+		$queue = new SplPriorityQueue();
+		$queue->setExtractFlags(SplPriorityQueue::EXTR_DATA);
+		$queue->insert([
 			'cost' => 0.0,
 			'state' => $payload->state,
 			'steps' => [],
 			'warnings' => [],
-		]];
-		$bestByStateAndDepth = [];
+			'visitedStates' => [$payload->state->getKey() => true],
+			'visitedRoutes' => [],
+		], 0.0);
+
+		$bestCostByState = [$payload->state->getKey() => 0.0];
 		$bestPlan = null;
+		$expansions = 0;
 
-		while ($queue) {
-			usort($queue, fn(array $a, array $b) => $a['cost'] <=> $b['cost']);
-			$current = array_shift($queue);
+		while(!$queue->isEmpty()) {
+			$current = $queue->extract();
 			$currentState = $current['state'];
-			$stepCount = count($current['steps']);
+			$currentCost = (float) $current['cost'];
+			$steps = $current['steps'];
+			$stepCount = count($steps);
 
-			if ($stepCount > 0 && $this->matcher->matches($currentState, $targetState)) {
-				$bestPlan = $this->chooseBetter($bestPlan, new ParserPlan($payload->state, $targetState, $current['steps'], $current['cost'], $current['warnings']));
+			if($bestPlan !== null && $currentCost > ($bestPlan->totalCost + 0.000001)) {
 				continue;
 			}
 
-			if ($stepCount >= $strategy->maxSteps) {
+			if($stepCount > 0 && $this->matcher->matches($currentState, $targetState)) {
+				$bestPlan = $this->chooseBetter(
+					$bestPlan,
+					new ParserPlan($payload->state, $targetState, $steps, $currentCost, $current['warnings'], [
+						'nodeExpansions' => $expansions,
+						'cycleGuard' => 'state-and-route-path-guard'
+					])
+				);
 				continue;
 			}
 
-			foreach ($routes as $route) {
-				if ($request->parserName !== null && $request->parserName !== $route->parserName) {
+			if($stepCount >= $strategy->maxSteps) {
+				continue;
+			}
+
+			$expansions++;
+
+			if($expansions > self::MAX_NODE_EXPANSIONS) {
+				$warnings[] = 'Parser planning stopped because the maximum number of graph expansions was reached.';
+				break;
+			}
+
+			foreach($this->getOutgoingRoutes($currentState, $routeIndex, $payload->metadata) as $route) {
+				if($request->parserName !== null && $request->parserName !== $route->parserName) {
 					continue;
 				}
 
-				if (!$this->matcher->matches($currentState, $route->from, $payload->metadata)) {
+				$routeKey = $route->getKey();
+				$toKey = $route->to->getKey();
+
+				if(isset($current['visitedRoutes'][$routeKey]) || isset($current['visitedStates'][$toKey])) {
 					continue;
 				}
 
 				$parser = $this->registry->getParser($route->parserName);
-				if ($parser === null) {
+				if($parser === null) {
 					continue;
 				}
 
 				$context = new ParserPlanningContext($request, $payload->withState($currentState), $strategy);
 				$evaluation = $parser->evaluate($route, $context);
-				if ($this->scoreCalculator->violatesConstraints($route, $evaluation, $strategy)) {
+				if($this->scoreCalculator->violatesConstraints($route, $evaluation, $strategy)) {
 					continue;
 				}
 
 				$routeCost = $this->scoreCalculator->calculate($route, $evaluation, $strategy);
-				$nextCost = $current['cost'] + $routeCost;
-				$nextStep = new ParserPlanStep($route->parserName, $route, $currentState, $route->to, $routeCost, $evaluation);
-				$nextSteps = array_merge($current['steps'], [$nextStep]);
-				$key = $route->to->getKey() . ':' . count($nextSteps);
+				$nextCost = $currentCost + $routeCost;
 
-				if (isset($bestByStateAndDepth[$key]) && $bestByStateAndDepth[$key] <= $nextCost) {
+				if(isset($bestCostByState[$toKey]) && $bestCostByState[$toKey] <= $nextCost) {
 					continue;
 				}
 
-				$bestByStateAndDepth[$key] = $nextCost;
-				$queue[] = [
+				$bestCostByState[$toKey] = $nextCost;
+				$nextStep = new ParserPlanStep($route->parserName, $route, $currentState, $route->to, $routeCost, $evaluation);
+				$nextVisitedStates = $current['visitedStates'];
+				$nextVisitedRoutes = $current['visitedRoutes'];
+				$nextVisitedStates[$toKey] = true;
+				$nextVisitedRoutes[$routeKey] = true;
+
+				$queue->insert([
 					'cost' => $nextCost,
 					'state' => $route->to,
-					'steps' => $nextSteps,
+					'steps' => array_merge($steps, [$nextStep]),
 					'warnings' => array_merge($current['warnings'], $evaluation->warnings),
-				];
+					'visitedStates' => $nextVisitedStates,
+					'visitedRoutes' => $nextVisitedRoutes,
+				], -$nextCost);
 			}
+		}
+
+		if($bestPlan !== null && count($warnings) > 0) {
+			return new ParserPlan(
+				$bestPlan->startState,
+				$bestPlan->targetState,
+				$bestPlan->steps,
+				$bestPlan->totalCost,
+				array_values(array_unique(array_merge($bestPlan->warnings, $warnings))),
+				$bestPlan->metadata
+			);
 		}
 
 		return $bestPlan;
 	}
 
+	/**
+	 * @param ParserRoute[] $routes
+	 * @return array<string,ParserRoute[]>
+	 */
+	private function buildRouteIndex(array $routes): array {
+		$index = [];
+
+		foreach($routes as $route) {
+			$index[$route->from->type] ??= [];
+			$index[$route->from->type][] = $route;
+		}
+
+		return $index;
+	}
+
+	/**
+	 * @param array<string,ParserRoute[]> $routeIndex
+	 * @return ParserRoute[]
+	 */
+	private function getOutgoingRoutes(ParserState $state, array $routeIndex, array $metadata): array {
+		$candidates = [];
+
+		foreach([$state->type, '*', 'any'] as $type) {
+			foreach($routeIndex[$type] ?? [] as $route) {
+				$candidates[$route->getKey()] = $route;
+			}
+		}
+
+		return array_values(array_filter(
+			$candidates,
+			fn(ParserRoute $route): bool => $this->matcher->matches($state, $route->from, $metadata)
+		));
+	}
+
 	private function chooseBetter(?ParserPlan $a, ?ParserPlan $b): ?ParserPlan {
-		if ($a === null) { return $b; }
-		if ($b === null) { return $a; }
+		if($a === null) { return $b; }
+		if($b === null) { return $a; }
 		$epsilon = 0.000001;
-		if (abs($a->totalCost - $b->totalCost) > $epsilon) {
+		if(abs($a->totalCost - $b->totalCost) > $epsilon) {
 			return $a->totalCost < $b->totalCost ? $a : $b;
 		}
-		if (count($a->steps) !== count($b->steps)) {
+		if(count($a->steps) !== count($b->steps)) {
 			return count($a->steps) < count($b->steps) ? $a : $b;
 		}
 		return $this->planKey($a) <= $this->planKey($b) ? $a : $b;

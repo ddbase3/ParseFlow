@@ -2,6 +2,8 @@ LICENSE
 MANIFEST.txt
 README.md
 VERSION
+assets/parseflowgraph/parseflowgraph.css
+assets/parseflowgraph/parseflowgraph.js
 docs/ParserCatalog.md
 smoke.php
 src/Api/IParser.php
@@ -10,6 +12,7 @@ src/Api/IParserOutput.php
 src/Api/IParserService.php
 src/Api/IParserSource.php
 src/Api/IParserTarget.php
+src/Display/ParserExplorerAdminDisplay.php
 src/Dto/ParserCapabilityReport.php
 src/Dto/ParserExploreRequest.php
 src/Dto/ParserPayload.php
@@ -41,6 +44,7 @@ src/Output/BinaryParserOutput.php
 src/Output/ChunksParserOutput.php
 src/Output/FilesParserOutput.php
 src/Output/ImageParserOutput.php
+src/Output/ParseFlowGraphOutput.php
 src/Output/StreamParserOutput.php
 src/Output/StringParserOutput.php
 src/Output/StructuredParserOutput.php
@@ -164,3 +168,4 @@ src/Target/DirectoryParserTarget.php
 src/Target/FileParserTarget.php
 src/Target/ReturnParserTarget.php
 src/Target/StreamParserTarget.php
+tpl/Display/ParserExplorerAdminDisplay.php

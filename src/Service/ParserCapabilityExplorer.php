@@ -113,6 +113,7 @@ class ParserCapabilityExplorer {
 				'semanticQuality' => $route->quality->semanticQuality,
 				'speed' => $route->quality->speed,
 				'stability' => $route->quality->stability,
+				'monetaryCost' => $route->quality->monetaryCost,
 				'lossy' => $route->quality->lossy,
 				'requiresExternalService' => $route->quality->requiresExternalService,
 				'priority' => $route->quality->priority,

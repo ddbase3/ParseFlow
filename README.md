@@ -47,3 +47,22 @@ The report contains parser names, route information, known graph states, reachab
 This package includes 91 concrete parser classes and 91 routes.
 
 See `docs/ParserCatalog.md` for the generated parser catalog.
+
+## Graph UI endpoint
+
+`ParseFlow\Output\ParseFlowGraphOutput` implements `Base3\Api\IOutput` and exposes two formats:
+
+- `html`: renders the graph container, filter toolbar, SVG graph and route grid.
+- `json`: returns graph data with parsers, states, nodes, edges and routes.
+
+The HTML output resolves assets through `Base3\Api\IAssetResolver` and builds the JSON endpoint through `Base3\LinkTarget\Api\ILinkTargetService`:
+
+```php
+$this->assetResolver->resolve('plugin/ParseFlow/assets/parseflowgraph/parseflowgraph.js');
+$this->linkTargetService->getLink([
+	'name' => self::getName(),
+	'out' => 'json'
+]);
+```
+
+The output name is `parseflowgraphoutput`.
