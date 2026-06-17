@@ -473,7 +473,7 @@ $summaryCards = [
 		{ key: 'input_state', label: 'Input', defaultValue: DEFAULT_FILTERS.input_state || '', alwaysVisible: true },
 		{ key: 'output_state', label: 'Output', defaultValue: DEFAULT_FILTERS.output_state || '', alwaysVisible: true },
 		{ key: 'target_type', label: 'Target', defaultValue: DEFAULT_FILTERS.target_type || 'return', alwaysVisible: true },
-		{ key: 'strategy', label: 'Strategy', defaultValue: DEFAULT_FILTERS.strategy || 'balanced', alwaysVisible: true },
+		{ key: 'strategy', label: 'Strategy', defaultValue: DEFAULT_FILTERS.strategy || 'balanced' },
 		{ key: 'allow_external', label: 'External', defaultValue: DEFAULT_FILTERS.allow_external || 'no' },
 		{ key: 'allow_lossy', label: 'Lossy', defaultValue: DEFAULT_FILTERS.allow_lossy || 'yes' },
 		{ key: 'max_steps', label: 'Max steps', defaultValue: DEFAULT_FILTERS.max_steps || '5' }
@@ -483,8 +483,6 @@ $summaryCards = [
 		carry[field.key] = field.defaultValue || '';
 		return carry;
 	}, {});
-	const HOT_FILTER_KEYS = new Set(['source_type', 'input_state', 'output_state', 'target_type', 'strategy']);
-	const OPTIONAL_FILTER_PANEL_CLASS = 'parser-explorer-optional-filter-panel';
 	const visibleOptionalFilters = new Set();
 
 	const layout = {
@@ -880,22 +878,8 @@ $summaryCards = [
 		return root.querySelector('.parser-explorer-panel--filters');
 	}
 
-	function getTopPanel(root) {
-		return root.querySelector('.parser-explorer-panel--main');
-	}
-
-	function getFilterPanels(root) {
-		return [getFilterPanel(root), getTopPanel(root)].filter((panel) => panel !== null);
-	}
-
-	function ensureOptionalFilterPicker(root) {
-		const topPanel = getTopPanel(root);
-
-		if (!topPanel) {
-			return null;
-		}
-
-		let picker = topPanel.querySelector('.parser-explorer-optional-filter-picker');
+	function ensureOptionalFilterPicker(panel) {
+		let picker = panel.querySelector('.parser-explorer-optional-filter-picker');
 
 		if (picker) {
 			return picker;
@@ -913,14 +897,14 @@ $summaryCards = [
 
 		picker.appendChild(label);
 		picker.appendChild(select);
-		topPanel.appendChild(picker);
+		panel.prepend(picker);
 
 		select.addEventListener('change', () => {
 			const key = select.value;
 
 			if (key !== '') {
 				visibleOptionalFilters.add(key);
-				applyOptionalFilterVisibility(root);
+				applyOptionalFilterVisibility(panel);
 			}
 
 			select.value = '';
@@ -929,9 +913,9 @@ $summaryCards = [
 		return picker;
 	}
 
-	function updateOptionalFilterPickerOptions(root) {
-		const picker = ensureOptionalFilterPicker(root);
-		const select = picker ? picker.querySelector('select') : null;
+	function updateOptionalFilterPickerOptions(panel) {
+		const picker = ensureOptionalFilterPicker(panel);
+		const select = picker.querySelector('select');
 
 		if (!(select instanceof HTMLSelectElement)) {
 			return;
@@ -942,17 +926,16 @@ $summaryCards = [
 			.map((field) => field.key);
 		const signature = optionKeys.join('|');
 
-		if (select.dataset.signature === signature) {
+		if (select.dataset.optionSignature === signature) {
 			return;
 		}
 
-		const currentValue = select.value;
-		select.dataset.signature = signature;
+		const current = select.value;
 		select.replaceChildren();
 
 		const placeholder = document.createElement('option');
 		placeholder.value = '';
-		placeholder.textContent = 'Add filter';
+		placeholder.textContent = 'Select optional filter';
 		select.appendChild(placeholder);
 
 		optionKeys.forEach((key) => {
@@ -968,67 +951,44 @@ $summaryCards = [
 			select.appendChild(option);
 		});
 
-		select.value = optionKeys.includes(currentValue) ? currentValue : '';
+		select.dataset.optionSignature = signature;
+		select.value = optionKeys.includes(current) ? current : '';
 	}
 
-	function ensureOptionalFilterRemoveButton(group, key, root) {
+	function ensureOptionalFilterRemoveButton(group, key, panel) {
 		if (group.querySelector('.parser-explorer-optional-filter-remove')) {
 			return;
 		}
 
-		const remove = document.createElement('button');
-		remove.type = 'button';
-		remove.className = 'parser-explorer-optional-filter-remove';
-		remove.title = 'Remove this filter';
-		remove.textContent = '×';
-		remove.addEventListener('click', (event) => {
+		const button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'parser-explorer-optional-filter-remove';
+		button.title = 'Remove this filter';
+		button.textContent = '×';
+		button.addEventListener('click', (event) => {
 			event.preventDefault();
 			event.stopPropagation();
+
 			resetFilterGroup(group, key);
 			visibleOptionalFilters.delete(key);
-			applyOptionalFilterVisibility(root);
+			applyOptionalFilterVisibility(panel);
 		});
 
-		group.appendChild(remove);
+		group.appendChild(button);
 	}
 
-	function moveGroupToPanel(group, panel) {
-		if (!panel || group.parentElement === panel) {
+	function applyOptionalFilterVisibility(panel) {
+		if (!panel) {
 			return;
 		}
 
-		panel.appendChild(group);
-	}
+		ensureOptionalFilterPicker(panel);
 
-	function getAllFilterGroups(root) {
-		const groups = [];
+		Array.from(panel.querySelectorAll('.mg-control-group')).forEach((group) => {
+			if (group.classList.contains('parser-explorer-optional-filter-picker')) {
+				return;
+			}
 
-		getFilterPanels(root).forEach((panel) => {
-			Array.from(panel.querySelectorAll('.mg-control-group')).forEach((group) => {
-				if (group.classList.contains('parser-explorer-optional-filter-picker')) {
-					return;
-				}
-
-				if (!groups.includes(group)) {
-					groups.push(group);
-				}
-			});
-		});
-
-		return groups;
-	}
-
-	function applyOptionalFilterVisibility(root) {
-		const filterPanel = getFilterPanel(root);
-		const topPanel = getTopPanel(root);
-
-		if (!filterPanel || !topPanel) {
-			return;
-		}
-
-		ensureOptionalFilterPicker(root);
-
-		getAllFilterGroups(root).forEach((group) => {
 			const key = getFilterKeyFromGroup(group);
 			const field = key !== '' ? getFilterFieldByKey(key) : null;
 
@@ -1039,12 +999,8 @@ $summaryCards = [
 			const control = getFilterControlFromGroup(group);
 			const value = getControlValue(control);
 			const hasNonDefaultValue = !isFilterValueDefault(key, value);
-			const className = 'parser-explorer-filter-' + key.replace(/_/g, '-');
 
-			group.classList.add(className);
-
-			if (field.alwaysVisible || HOT_FILTER_KEYS.has(key)) {
-				moveGroupToPanel(group, filterPanel);
+			if (field.alwaysVisible) {
 				group.style.display = '';
 				return;
 			}
@@ -1053,59 +1009,55 @@ $summaryCards = [
 				visibleOptionalFilters.add(key);
 			}
 
-			ensureOptionalFilterRemoveButton(group, key, root);
-
-			if (visibleOptionalFilters.has(key)) {
-				moveGroupToPanel(group, topPanel);
-				group.style.display = '';
-				return;
-			}
-
-			moveGroupToPanel(group, filterPanel);
-			group.style.display = 'none';
+			ensureOptionalFilterRemoveButton(group, key, panel);
+			group.style.display = visibleOptionalFilters.has(key) ? '' : 'none';
 		});
 
-		updateOptionalFilterPickerOptions(root);
+		updateOptionalFilterPickerOptions(panel);
 	}
 
 	function applyDefaultFilterControlValues(root) {
-		getFilterPanels(root).forEach((panel) => {
-			Array.from(panel.querySelectorAll('.mg-control-group')).forEach((group) => {
-				const key = getFilterKeyFromGroup(group);
-				const control = getFilterControlFromGroup(group);
+		const panel = getFilterPanel(root);
 
-				if (!key || !control || String(control.value || '') !== '') {
-					return;
-				}
+		if (!panel) {
+			return;
+		}
 
-				const defaultValue = String(FILTER_DEFAULTS[key] || '');
+		Array.from(panel.querySelectorAll('.mg-control-group')).forEach((group) => {
+			const key = getFilterKeyFromGroup(group);
+			const control = getFilterControlFromGroup(group);
 
-				if (defaultValue === '') {
-					return;
-				}
+			if (!key || !control || String(control.value || '') !== '') {
+				return;
+			}
 
-				control.value = defaultValue;
-			});
+			const defaultValue = String(FILTER_DEFAULTS[key] || '');
+
+			if (defaultValue === '') {
+				return;
+			}
+
+			control.value = defaultValue;
 		});
 	}
 
 	function initializeOptionalFilterControls(root) {
-		const filterPanel = getFilterPanel(root);
-		const topPanel = getTopPanel(root);
+		const panel = getFilterPanel(root);
 
-		if (!filterPanel || !topPanel || root.dataset.optionalFiltersInitialized === '1') {
+		if (!panel || root.dataset.optionalFiltersInitialized === '1') {
 			return;
 		}
 
 		root.dataset.optionalFiltersInitialized = '1';
-		applyOptionalFilterVisibility(root);
+		applyOptionalFilterVisibility(panel);
 
-		[filterPanel, topPanel].forEach((panel) => {
-			panel.addEventListener('change', () => {
-				window.requestAnimationFrame(() => {
-					applyOptionalFilterVisibility(root);
-				});
-			});
+		const observer = new MutationObserver(() => {
+			applyOptionalFilterVisibility(panel);
+		});
+
+		observer.observe(panel, {
+			childList: true,
+			subtree: true
 		});
 	}
 
