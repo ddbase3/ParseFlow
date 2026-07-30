@@ -47,6 +47,7 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 	private const MAX_OUTGOING_ROUTES_PER_STATE = 10;
 	private const MAX_START_BRANCH_ROUTES = 12;
 
+	private array $translations = [];
 	private ?ParserCapabilityReport $capabilityReport = null;
 	private ?array $routes = null;
 	private ?array $routeMap = null;
@@ -74,7 +75,14 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 		// no-op
 	}
 
+	public function getHelp(): string {
+		$this->loadTranslations();
+
+		return $this->t('help', 'Explore available parser routes and generate PHP integration code.');
+	}
+
 	public function getOutput(string $out = 'html', bool $final = false): string {
+		$this->loadTranslations();
 		$out = strtolower((string) $out);
 
 		if($out === 'json') {
@@ -110,6 +118,7 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 		$this->view->assign('options', $this->buildOptionsPayload());
 		$this->view->assign('initialPage', $this->buildPageResponse($initialRequest));
 		$this->view->assign('searchDebounceMs', self::DEFAULT_SEARCH_DEBOUNCE_MS);
+		$this->view->assign('translations', $this->translations);
 
 		return $this->view->loadTemplate();
 	}
@@ -567,21 +576,31 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 
 		return [
 			'defaults' => $this->getDefaultFilters(),
-			'sourceTypes' => $this->optionRows(['string', 'file', 'binary', 'stream'], false),
+			'sourceTypes' => $this->labeledOptionRows([
+				'string' => $this->t('source_type_string', 'String'),
+				'file' => $this->t('source_type_file', 'File'),
+				'binary' => $this->t('source_type_binary', 'Binary'),
+				'stream' => $this->t('source_type_stream', 'Stream'),
+			]),
 			'inputStates' => $this->optionRows(array_keys($inputStates), false),
 			'outputStates' => $this->optionRows(array_keys($outputStates), false),
-			'targetTypes' => $this->optionRows(['return', 'file', 'directory', 'stream'], false),
+			'targetTypes' => $this->labeledOptionRows([
+				'return' => $this->t('target_type_return', 'Return'),
+				'file' => $this->t('target_type_file', 'File'),
+				'directory' => $this->t('target_type_directory', 'Directory'),
+				'stream' => $this->t('target_type_stream', 'Stream'),
+			]),
 			'strategies' => [
-				['value' => 'balanced', 'label' => 'Balanced'],
-				['value' => 'fastest', 'label' => 'Fastest'],
-				['value' => 'best_quality', 'label' => 'Best quality'],
-				['value' => 'best_text', 'label' => 'Best text'],
-				['value' => 'best_structure', 'label' => 'Best structure'],
-				['value' => 'local_only', 'label' => 'Local only'],
+				['value' => 'balanced', 'label' => $this->t('strategy_balanced', 'Balanced')],
+				['value' => 'fastest', 'label' => $this->t('strategy_fastest', 'Fastest')],
+				['value' => 'best_quality', 'label' => $this->t('strategy_best_quality', 'Best quality')],
+				['value' => 'best_text', 'label' => $this->t('strategy_best_text', 'Best text')],
+				['value' => 'best_structure', 'label' => $this->t('strategy_best_structure', 'Best structure')],
+				['value' => 'local_only', 'label' => $this->t('strategy_local_only', 'Local only')],
 			],
 			'boolean' => [
-				['value' => 'yes', 'label' => 'Yes'],
-				['value' => 'no', 'label' => 'No'],
+				['value' => 'yes', 'label' => $this->t('value_yes', 'Yes')],
+				['value' => 'no', 'label' => $this->t('value_no', 'No')],
 			],
 			'maxSteps' => $this->optionRows(['1', '2', '3', '4', '5', '6'], false),
 			'parsers' => $this->optionRows(array_keys($parserOptions), true)
@@ -600,7 +619,7 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 		$options = [];
 
 		if($includeEmpty) {
-			$options[] = ['value' => '', 'label' => 'Any'];
+			$options[] = ['value' => '', 'label' => $this->t('value_any', 'Any')];
 		}
 
 		foreach($values as $value) {
@@ -1112,7 +1131,7 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 
 		return [
 			'headline' => ($row['inputState'] ?? '') . ' → ' . ($row['outputState'] ?? ''),
-			'summary' => ($row['parserChain'] ?? '') . ' | cost ' . ($row['totalCost'] ?? ''),
+			'summary' => $this->t('detail_summary', '%s | cost %s', (string)($row['parserChain'] ?? ''), (string)($row['totalCost'] ?? '')),
 			'badges' => $this->buildDetailBadges($row),
 			'sections' => $this->buildDetailSections($row),
 			'steps' => $row['stepsData'] ?? [],
@@ -1127,18 +1146,18 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 	 */
 	private function buildDetailBadges(array $row): array {
 		$badges = [
-			['label' => (string) ($row['strategy'] ?? 'balanced'), 'className' => 'parser-explorer-pill-strong'],
-			['label' => 'steps: ' . (string) ($row['steps'] ?? '0'), 'className' => ''],
-			['label' => 'quality: ' . (string) ($row['qualityPercent'] ?? '0') . '%', 'className' => ''],
-			['label' => 'speed: ' . (string) ($row['speedPercent'] ?? '0') . '%', 'className' => ''],
+			['label' => $this->strategyLabel((string)($row['strategy'] ?? 'balanced')), 'className' => 'parser-explorer-pill-strong'],
+			['label' => $this->t('badge_steps', 'steps: %s', (string)($row['steps'] ?? '0')), 'className' => ''],
+			['label' => $this->t('badge_quality', 'quality: %s%%', (string)($row['qualityPercent'] ?? '0')), 'className' => ''],
+			['label' => $this->t('badge_speed', 'speed: %s%%', (string)($row['speedPercent'] ?? '0')), 'className' => ''],
 		];
 
 		if(((int) ($row['externalCount'] ?? 0)) > 0) {
-			$badges[] = ['label' => 'external', 'className' => 'parser-explorer-pill-warning'];
+			$badges[] = ['label' => $this->t('badge_external', 'external'), 'className' => 'parser-explorer-pill-warning'];
 		}
 
 		if(((int) ($row['lossyCount'] ?? 0)) > 0) {
-			$badges[] = ['label' => 'lossy', 'className' => 'parser-explorer-pill-warning'];
+			$badges[] = ['label' => $this->t('badge_lossy', 'lossy'), 'className' => 'parser-explorer-pill-warning'];
 		}
 
 		return $badges;
@@ -1150,15 +1169,15 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 	 */
 	private function buildDetailSections(array $row): array {
 		return [
-			['label' => 'Source', 'value' => (string) ($row['sourceType'] ?? '')],
-			['label' => 'Input state', 'value' => (string) ($row['inputState'] ?? '')],
-			['label' => 'Output state', 'value' => (string) ($row['outputState'] ?? '')],
-			['label' => 'Target', 'value' => (string) ($row['targetType'] ?? '')],
-			['label' => 'Parser chain', 'value' => (string) ($row['parserChain'] ?? '')],
-			['label' => 'Route chain', 'value' => (string) ($row['routeChain'] ?? '')],
-			['label' => 'Total cost', 'value' => (string) ($row['totalCost'] ?? '')],
-			['label' => 'Monetary cost', 'value' => (string) ($row['monetaryCost'] ?? '')],
-			['label' => 'Path signature', 'value' => (string) ($row['pathSignature'] ?? '')],
+			['label' => $this->t('detail_source', 'Source'), 'value' => $this->sourceTypeLabel((string)($row['sourceType'] ?? ''))],
+			['label' => $this->t('detail_input_state', 'Input state'), 'value' => (string)($row['inputState'] ?? '')],
+			['label' => $this->t('detail_output_state', 'Output state'), 'value' => (string)($row['outputState'] ?? '')],
+			['label' => $this->t('detail_target', 'Target'), 'value' => $this->targetTypeLabel((string)($row['targetType'] ?? ''))],
+			['label' => $this->t('detail_parser_chain', 'Parser chain'), 'value' => (string)($row['parserChain'] ?? '')],
+			['label' => $this->t('detail_route_chain', 'Route chain'), 'value' => (string)($row['routeChain'] ?? '')],
+			['label' => $this->t('detail_total_cost', 'Total cost'), 'value' => (string)($row['totalCost'] ?? '')],
+			['label' => $this->t('detail_monetary_cost', 'Monetary cost'), 'value' => (string)($row['monetaryCost'] ?? '')],
+			['label' => $this->t('detail_path_signature', 'Path signature'), 'value' => (string)($row['pathSignature'] ?? '')],
 		];
 	}
 
@@ -1204,8 +1223,8 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 		$code = "<?php declare(strict_types=1);\n\n";
 		$code .= implode("\n", $imports) . "\n\n";
 		$code .= "/** @var IParserService \$parserService */\n";
-		$code .= "/*\n * Expected parser combination for the current registry and strategy:\n";
-		$code .= count($chainComment) > 0 ? implode("\n", $chainComment) . "\n" : " * No parser steps available.\n";
+		$code .= "/*\n * " . $this->t('code_expected_combination', 'Expected parser combination for the current registry and strategy:') . "\n";
+		$code .= count($chainComment) > 0 ? implode("\n", $chainComment) . "\n" : " * " . $this->t('code_no_steps', 'No parser steps available.') . "\n";
 		$code .= " */\n";
 		$code .= $this->buildPhpSourceSetup($sourceType, $inputState['format']);
 		$code .= $this->buildPhpTargetSetup($targetType, $outputState['format']);
@@ -1310,6 +1329,66 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 			"\t\tallowExternalServices: " . $allowExternal . ",\n" .
 			"\t\tallowedParsers: " . $parserList . "\n" .
 			"\t)";
+	}
+
+
+	/**
+	 * @param array<string,string> $labels
+	 * @return array<int,array<string,string>>
+	 */
+	private function labeledOptionRows(array $labels): array {
+		$options = [];
+		foreach($labels as $value => $label) {
+			$options[] = ['value' => (string)$value, 'label' => (string)$label];
+		}
+
+		return $options;
+	}
+
+	private function strategyLabel(string $value): string {
+		return match($value) {
+			'fastest' => $this->t('strategy_fastest', 'Fastest'),
+			'best_quality' => $this->t('strategy_best_quality', 'Best quality'),
+			'best_text' => $this->t('strategy_best_text', 'Best text'),
+			'best_structure' => $this->t('strategy_best_structure', 'Best structure'),
+			'local_only' => $this->t('strategy_local_only', 'Local only'),
+			default => $this->t('strategy_balanced', 'Balanced'),
+		};
+	}
+
+	private function sourceTypeLabel(string $value): string {
+		return match($value) {
+			'file' => $this->t('source_type_file', 'File'),
+			'binary' => $this->t('source_type_binary', 'Binary'),
+			'stream' => $this->t('source_type_stream', 'Stream'),
+			default => $this->t('source_type_string', 'String'),
+		};
+	}
+
+	private function targetTypeLabel(string $value): string {
+		return match($value) {
+			'file' => $this->t('target_type_file', 'File'),
+			'directory' => $this->t('target_type_directory', 'Directory'),
+			'stream' => $this->t('target_type_stream', 'Stream'),
+			default => $this->t('target_type_return', 'Return'),
+		};
+	}
+
+	private function loadTranslations(): void {
+		$this->view->setPath(DIR_PLUGIN . 'ParseFlow');
+		$this->view->loadBricks('Display');
+
+		$translations = $this->view->getBricks('parser_explorer_admin_display');
+		$this->translations = is_array($translations) ? $translations : [];
+	}
+
+	private function t(string $key, string $fallback, mixed ...$values): string {
+		$text = trim((string)($this->translations[$key] ?? ''));
+		if($text === '') {
+			$text = $fallback;
+		}
+
+		return $values === [] ? $text : vsprintf($text, $values);
 	}
 
 	private function sourceClass(string $type): string {

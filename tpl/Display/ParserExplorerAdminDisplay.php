@@ -5,13 +5,17 @@ $modularGridCssUrl = (string) $resolve('plugin/ClientStack/assets/modulargrid/st
 $modularGridJsUrl = (string) $resolve('plugin/ClientStack/assets/modulargrid/index.js');
 $summary = is_array($this->_['summary'] ?? null) ? $this->_['summary'] : [];
 $options = is_array($this->_['options'] ?? null) ? $this->_['options'] : [];
+$translations = is_array($this->_['translations'] ?? null) ? $this->_['translations'] : [];
+$t = static fn(string $key, string $fallback): string => trim((string)($translations[$key] ?? '')) !== ''
+	? (string)$translations[$key]
+	: $fallback;
 $summaryCards = [
-	['Parsers', (int) ($summary['parserCount'] ?? 0)],
-	['Routes', (int) ($summary['routeCount'] ?? 0)],
-	['States', (int) ($summary['stateCount'] ?? 0)],
-	['Outputs', (int) ($summary['outputCount'] ?? 0)],
-	['External', (int) ($summary['externalRouteCount'] ?? 0)],
-	['Lossy', (int) ($summary['lossyRouteCount'] ?? 0)],
+	[$t('summary_parsers', 'Parsers'), (int) ($summary['parserCount'] ?? 0)],
+	[$t('summary_routes', 'Routes'), (int) ($summary['routeCount'] ?? 0)],
+	[$t('summary_states', 'States'), (int) ($summary['stateCount'] ?? 0)],
+	[$t('summary_outputs', 'Outputs'), (int) ($summary['outputCount'] ?? 0)],
+	[$t('summary_external', 'External'), (int) ($summary['externalRouteCount'] ?? 0)],
+	[$t('summary_lossy', 'Lossy'), (int) ($summary['lossyRouteCount'] ?? 0)],
 ];
 ?>
 <link rel="stylesheet" href="<?php echo htmlspecialchars($modularGridCssUrl, ENT_QUOTES); ?>" />
@@ -406,9 +410,9 @@ $summaryCards = [
 </style>
 
 <div class="parser-explorer-shell">
-	<h1>ParseFlow Explorer</h1>
+	<h1><?php echo htmlspecialchars($t('title', 'ParseFlow Explorer'), ENT_QUOTES); ?></h1>
 	<p>
-		Select an input and output representation to explore the best available parser combinations for exactly that conversion. Open a row to see the route chain and PHP code for calling it through <code>IParserService</code>.
+		<?php echo htmlspecialchars($t('intro_before_code', 'Select an input and output representation to explore the best available parser combinations for exactly that conversion. Open a row to see the route chain and PHP code for calling it through'), ENT_QUOTES); ?> <code>IParserService</code>.
 	</p>
 
 	<div class="parser-explorer-summary">

@@ -19,6 +19,7 @@ namespace ParseFlow\Output;
 use Base3\Api\IAssetResolver;
 use Base3\Api\IOutput;
 use Base3\LinkTarget\Api\ILinkTargetService;
+use Base3\Translation\Api\ITranslation;
 use ParseFlow\Api\IParserService;
 
 /**
@@ -29,7 +30,8 @@ class ParseFlowGraphOutput implements IOutput {
 	public function __construct(
 		private readonly IParserService $parserService,
 		private readonly IAssetResolver $assetResolver,
-		private readonly ILinkTargetService $linkTargetService
+		private readonly ILinkTargetService $linkTargetService,
+		private readonly ITranslation $translation
 	) {}
 
 	public static function getName(): string {
@@ -56,17 +58,17 @@ class ParseFlowGraphOutput implements IOutput {
 			. '<div class="parseflow-graph" data-parseflow-graph data-graph-url="' . $this->escape($jsonUrl) . '">\n'
 			. '\t<div class="parseflow-graph__header">\n'
 			. '\t\t<div>\n'
-			. '\t\t\t<h2>ParseFlow Graph</h2>\n'
-			. '\t\t\t<p>Discovered parser routes, states and parser capabilities.</p>\n'
+			. '\t\t\t<h2>' . $this->escape($this->t('graph_title', 'ParseFlow Graph')) . '</h2>\n'
+			. '\t\t\t<p>' . $this->escape($this->t('graph_intro', 'Discovered parser routes, states and parser capabilities.')) . '</p>\n'
 			. '\t\t</div>\n'
 			. '\t\t<div class="parseflow-graph__stats" data-role="stats"></div>\n'
 			. '\t</div>\n'
 			. '\t<div class="parseflow-graph__toolbar">\n'
-			. '\t\t<input type="search" data-role="search" placeholder="Filter parser, state or format">\n'
-			. '\t\t<select data-role="parser-filter"><option value="">All parsers</option></select>\n'
-			. '\t\t<select data-role="type-filter"><option value="">All state types</option></select>\n'
+			. '\t\t<input type="search" data-role="search" placeholder="' . $this->escape($this->t('graph_search_placeholder', 'Filter parser, state or format')) . '">\n'
+			. '\t\t<select data-role="parser-filter"><option value="">' . $this->escape($this->t('graph_all_parsers', 'All parsers')) . '</option></select>\n'
+			. '\t\t<select data-role="type-filter"><option value="">' . $this->escape($this->t('graph_all_state_types', 'All state types')) . '</option></select>\n'
 			. '\t</div>\n'
-			. '\t<div class="parseflow-graph__message" data-role="message">Loading ParseFlow graph...</div>\n'
+			. '\t<div class="parseflow-graph__message" data-role="message">' . $this->escape($this->t('graph_loading', 'Loading ParseFlow graph...')) . '</div>\n'
 			. '\t<div class="parseflow-graph__canvas" data-role="canvas"></div>\n'
 			. '\t<div class="parseflow-graph__grid" data-role="grid"></div>\n'
 			. '</div>\n'
@@ -164,6 +166,11 @@ class ParseFlowGraphOutput implements IOutput {
 		$type = (string)($state['type'] ?? '*');
 		$format = $state['format'] ?? null;
 		return $format === null || $format === '' ? $type : $type . '/' . $format;
+	}
+
+
+	private function t(string $key, string $fallback): string {
+		return $this->translation->translate('Output', 'parseflow_graph_output', $key, $fallback);
 	}
 
 	private function escape(string $value): string {
