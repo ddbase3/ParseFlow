@@ -439,6 +439,7 @@ $summaryCards = [
 		FiltersPlugin,
 		HeaderMenuPlugin,
 		InfoPlugin,
+		InfiniteScrollPlugin,
 		ModularGrid,
 		ResetPlugin,
 		RowActionsPlugin,
@@ -1123,6 +1124,7 @@ $summaryCards = [
 				ResetPlugin,
 				SessionStoragePlugin,
 				RowDetailPlugin,
+				InfiniteScrollPlugin,
 			],
 			pluginOptions: {
 				search: {
@@ -1261,6 +1263,11 @@ $summaryCards = [
 							return renderParserDetail(context);
 						}
 					}
+				},
+				infiniteScroll: {
+					threshold: 180,
+					pageSize: BATCH_SIZE,
+					containerSelector: '.mg-table-scroll'
 				}
 			},
 			columns: [

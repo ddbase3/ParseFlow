@@ -26,6 +26,7 @@ use ParseFlow\Source\BinaryParserSource;
 use ParseFlow\Source\FileParserSource;
 use ParseFlow\Source\StreamParserSource;
 use ParseFlow\Source\StringParserSource;
+use ParseFlow\Source\StructuredParserSource;
 
 /**
  * Resolves transport sources into initial parser payloads.
@@ -38,6 +39,7 @@ class ParserSourceResolver {
 			'string' => $this->resolveString($source, $input),
 			'binary' => $this->resolveBinary($source, $input),
 			'stream' => $this->resolveStream($source, $input),
+			'structured' => $this->resolveStructured($source, $input),
 			default => throw new ParserExecutionException('Unsupported parser source type: ' . $source->getType())
 		};
 	}
@@ -76,6 +78,18 @@ class ParserSourceResolver {
 		$extension = isset($metadata['filename']) ? strtolower(pathinfo((string)$metadata['filename'], PATHINFO_EXTENSION)) : null;
 		$state = $this->stateFromInput($input, $extension);
 		return new ParserSourceInspection([new ParserPayload($state, $source->getStream(), $metadata)], extension: $extension, metadata: $metadata);
+	}
+
+	private function resolveStructured(StructuredParserSource $source, IParserInput $input): ParserSourceInspection {
+		$metadata = $source->getMetadata();
+		$format = $input->getFormat() ?? 'structured';
+		$type = $input->getType() === 'auto' ? 'structured' : $input->getType();
+		$state = new ParserState($type, $format);
+
+		return new ParserSourceInspection(
+			[new ParserPayload($state, $source->getValue(), $metadata)],
+			metadata: $metadata
+		);
 	}
 
 	private function stateFromInput(IParserInput $input, ?string $extension): ParserState {

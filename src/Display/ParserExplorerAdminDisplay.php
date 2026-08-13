@@ -439,10 +439,8 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 		$rows = $this->sortRows($result['rows'], $request['sort']);
 		$pageRows = array_map(fn(array $row): array => $this->withInlineDetail($row), array_slice($rows, $offset, $pageSize));
 
-		// The explorer intentionally returns a bounded top-k result set for one selected conversion.
-		// Infinite scrolling would force the server to recompute larger k-shortest path sets for every page.
-		$hasMore = false;
 		$total = count($rows);
+		$hasMore = $offset + count($pageRows) < $total;
 		$totalPages = $pageSize > 0 ? (int) ceil($total / $pageSize) : 0;
 
 		return [

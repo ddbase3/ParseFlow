@@ -24,6 +24,7 @@ use ParseFlow\Dto\ParserPlan;
 use ParseFlow\Dto\ParserRequest;
 use ParseFlow\Dto\ParserResult;
 use ParseFlow\Dto\ParserStrategy;
+use ParseFlow\Exception\UnsupportedParserRequestException;
 
 /**
  * Default parser service implementation.
@@ -69,7 +70,7 @@ class DefaultParserService implements IParserService {
 		try {
 			$this->plan($request);
 			return true;
-		} catch (\Throwable) {
+		} catch (UnsupportedParserRequestException) {
 			return false;
 		}
 	}

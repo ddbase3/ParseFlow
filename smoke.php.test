@@ -29,6 +29,25 @@ foreach (glob(__DIR__ . '/src/Parser/*/*Parser.php') as $file) { if (!str_ends_w
 foreach (glob(__DIR__ . '/src/Service/*.php') as $file) { $ordered[] = substr($file, strlen(__DIR__) + 1); }
 foreach ($ordered as $file) { require_once __DIR__ . '/' . $file; }
 
+class ThrowingSupportsParser implements \ParseFlow\Api\IParser {
+	public static function getName(): string { return 'throwingsupportsparser'; }
+	public function getRoutes(): array {
+		return [new \ParseFlow\Dto\ParserRoute(
+			parserName: self::getName(),
+			routeName: 'throws_during_evaluation',
+			from: new \ParseFlow\Dto\ParserState('string', 'supports-error'),
+			to: new \ParseFlow\Dto\ParserState('string', 'supports-error-out'),
+			quality: new \ParseFlow\Dto\ParserRouteQuality()
+		)];
+	}
+	public function evaluate(\ParseFlow\Dto\ParserRoute $route, \ParseFlow\Dto\ParserPlanningContext $context): \ParseFlow\Dto\ParserRouteEvaluation {
+		throw new \RuntimeException('supports evaluation failure');
+	}
+	public function execute(\ParseFlow\Dto\ParserStepRequest $request): \ParseFlow\Dto\ParserStepResult {
+		throw new \RuntimeException('not reached');
+	}
+}
+
 class TestClassMap implements \Base3\Api\IClassMap {
 	private array $instances = [];
 	public function __construct() {
@@ -72,6 +91,28 @@ $result = $service->parse(new \ParseFlow\Dto\ParserRequest(
 	target: new \ParseFlow\Target\ReturnParserTarget()
 ));
 assert(str_contains($result->getPayload()->getValue(), 'Ada'));
+
+
+$unsupported = $service->supports(new \ParseFlow\Dto\ParserRequest(
+	source: new \ParseFlow\Source\StringParserSource('value'),
+	input: new \ParseFlow\Input\PlainTextParserInput('unsupported-smoke-format'),
+	output: new \ParseFlow\Output\StringParserOutput('unsupported-smoke-target'),
+	target: new \ParseFlow\Target\ReturnParserTarget()
+));
+assert($unsupported === false);
+
+$thrown = false;
+try {
+	$service->supports(new \ParseFlow\Dto\ParserRequest(
+		source: new \ParseFlow\Source\StringParserSource('value'),
+		input: new \ParseFlow\Input\PlainTextParserInput('supports-error'),
+		output: new \ParseFlow\Output\StringParserOutput('supports-error-out'),
+		target: new \ParseFlow\Target\ReturnParserTarget()
+	));
+} catch (\RuntimeException $e) {
+	$thrown = $e->getMessage() === 'supports evaluation failure';
+}
+assert($thrown === true);
 
 echo "ok parserCount=" . ($report->metadata['parserCount'] ?? 0) . " routeCount=" . ($report->metadata['routeCount'] ?? 0) . "\n";
 }
