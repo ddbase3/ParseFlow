@@ -3,6 +3,8 @@ $resolve = $this->_['resolve'];
 $modularGridCssUrl = (string)$resolve('plugin/ClientStack/assets/modulargrid/styles/modulargrid.css');
 $modularGridJsUrl = (string)$resolve('plugin/ClientStack/assets/modulargrid/index.js');
 $translations = is_array($this->_['translations'] ?? null) ? $this->_['translations'] : [];
+$modularGridStrings = $this->getBricks('clientstack_modulargrid');
+$modularGridStrings = is_array($modularGridStrings) ? $modularGridStrings : [];
 $service = (string)($this->_['service'] ?? '');
 $t = static fn(string $key, string $fallback): string => trim((string)($translations[$key] ?? '')) !== ''
 	? (string)$translations[$key]
@@ -378,9 +380,10 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 	const GRID_SELECTOR = '#parseflow-parser-grid';
 	const LOG_SELECTOR = '#parseflow-parser-output';
 	const BATCH_SIZE = 40;
+	const MODULAR_GRID_STRINGS = <?php echo json_encode($modularGridStrings, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 	const LABELS = <?php echo json_encode([
-		'yes' => $t('yes', 'Yes'),
-		'no' => $t('no', 'No'),
+		'yes' => $t('yes_label', 'Yes'),
+		'no' => $t('no_label', 'No'),
 		'enabled' => $t('enabled', 'Enabled'),
 		'disabled' => $t('disabled', 'Disabled'),
 		'no_status' => $t('no_status', 'n/a'),
@@ -394,9 +397,20 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 		'no_configuration' => $t('no_configuration', 'This parser does not expose a configuration schema.'),
 		'save' => $t('save', 'Save'),
 		'reset' => $t('reset', 'Reset to defaults'),
-		'saved' => $t('saved', 'Parser configuration saved.'),
-		'reset_done' => $t('reset_done', 'Parser configuration reset.'),
+		'saved' => $t('saved', 'Parser configuration saved for {parser}.'),
+		'reset_done' => $t('reset_done', 'Parser configuration reset for {parser}.'),
 		'request_failed' => $t('request_failed', 'Parser configuration request failed.'),
+		'save_failed' => $t('save_failed', 'Failed to save parser configuration.'),
+		'reset_failed' => $t('reset_failed', 'Failed to reset parser configuration.'),
+		'error' => $t('error', 'Error'),
+		'missing_parser_row' => $t('missing_parser_row', 'Missing parser row.'),
+		'parser_detail_not_found' => $t('parser_detail_not_found', 'Parser detail not found.'),
+		'parser_fallback' => $t('parser_fallback', 'Parser'),
+		'loading_parser_details' => $t('loading_parser_details', 'Loading parser details...'),
+		'loaded_more_parsers' => $t('loaded_more_parsers', 'Loaded {appended} more parsers. {total} rows are currently loaded.'),
+		'loaded_parser_detail' => $t('loaded_parser_detail', 'Loaded parser detail for {parser}.'),
+		'failed_parser_detail' => $t('failed_parser_detail', 'Failed to load parser detail.'),
+		'initialized' => $t('initialized', 'ParseFlow parser administration initialized.'),
 	], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 
 	const layout = {
@@ -422,6 +436,12 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 	};
 
 	let grid = null;
+
+	function formatLabel(template, replacements = {}) {
+		return Object.entries(replacements).reduce((value, [key, replacement]) => {
+			return value.replaceAll('{' + key + '}', String(replacement));
+		}, String(template || ''));
+	}
 
 	function text(value, fallback = '') {
 		if (value === null || value === undefined) return fallback;
@@ -466,7 +486,8 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 
 		const data = await response.json();
 		if (!data || data.success !== true) {
-			throw new Error(text(data && data.error, LABELS.request_failed));
+			if (data && data.error) console.error(data.error);
+			throw new Error(LABELS.request_failed);
 		}
 
 		return data;
@@ -474,7 +495,7 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 
 	async function loadRemoteDetail(context) {
 		const row = context && context.row ? context.row : null;
-		if (!row) throw new Error('Missing parser row.');
+		if (!row) throw new Error(LABELS.missing_parser_row);
 
 		const response = await postJson({
 			mode: 'detail',
@@ -483,7 +504,7 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 		});
 
 		if (!response.found || !response.detail) {
-			throw new Error('Parser detail not found.');
+			throw new Error(LABELS.parser_detail_not_found);
 		}
 
 		return response.detail;
@@ -607,7 +628,7 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 			else if (field === 'status') {
 				element.className = 'parseflow-parser-pill';
 				if (row.status === 'error') {
-					element.textContent = 'Error';
+					element.textContent = LABELS.error;
 					element.classList.add('parseflow-parser-pill--error');
 				}
 				else if (row.enabled === true) {
@@ -635,7 +656,7 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 			[LABELS.technical_name, detail.name],
 			[LABELS.class, detail.class],
 			[LABELS.routes, String(detail.routeCount || 0)],
-			[LABELS.settings, detail.configurable ? detail.settingsGroup + '/' + detail.name : '—'],
+			[LABELS.settings, detail.configurable ? detail.settingsGroup + '/' + detail.name : '-'],
 			[LABELS.configured, detail.configured ? LABELS.yes : LABELS.no]
 		].forEach(([key, value]) => {
 			facts.appendChild(el('dt', '', key));
@@ -705,10 +726,11 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 				if (response.row && context && context.row) Object.assign(context.row, response.row);
 				updateGridRowPresentation(response.row || {});
 				renderDetailInto(detailRoot, response.detail || detail, context);
-				setLog(LABELS.saved + ' ' + detail.name);
+				setLog(formatLabel(LABELS.saved, { parser: detail.name }));
 			}
 			catch (error) {
-				setLog(text(error && error.message, error));
+				console.error(error);
+				setLog(LABELS.save_failed);
 				save.disabled = false;
 			}
 		});
@@ -725,10 +747,11 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 				if (response.row && context && context.row) Object.assign(context.row, response.row);
 				updateGridRowPresentation(response.row || {});
 				renderDetailInto(detailRoot, response.detail || detail, context);
-				setLog(LABELS.reset_done + ' ' + detail.name);
+				setLog(formatLabel(LABELS.reset_done, { parser: detail.name }));
 			}
 			catch (error) {
-				setLog(text(error && error.message, error));
+				console.error(error);
+				setLog(LABELS.reset_failed);
 				reset.disabled = false;
 			}
 		});
@@ -743,7 +766,7 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 
 		const header = el('div', 'parseflow-parser-detail-header');
 		const heading = el('div', '');
-		heading.appendChild(el('div', 'parseflow-parser-detail-title', text(detail.name, 'Parser')));
+		heading.appendChild(el('div', 'parseflow-parser-detail-title', text(detail.name, LABELS.parser_fallback)));
 		heading.appendChild(el('div', 'parseflow-parser-detail-summary', text(detail.class)));
 		header.appendChild(heading);
 		root.appendChild(header);
@@ -788,7 +811,7 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 
 	function renderStatus(value, row) {
 		let element;
-		if (value === 'error') element = pill('Error', 'error');
+		if (value === 'error') element = pill(LABELS.error, 'error');
 		else if (row && row.enabled === true) element = pill(LABELS.enabled, 'enabled');
 		else if (row && row.enabled === false) element = pill(LABELS.disabled, 'disabled');
 		else element = pill(LABELS.no_status);
@@ -798,7 +821,7 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 	}
 
 	function createLoadingDetail() {
-		return el('div', 'parseflow-parser-detail-summary', 'Loading parser details...');
+		return el('div', 'parseflow-parser-detail-summary', LABELS.loading_parser_details);
 	}
 
 	function createErrorDetail(context) {
@@ -829,6 +852,7 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 		});
 
 		grid = new ModularGrid(GRID_SELECTOR, {
+			strings: MODULAR_GRID_STRINGS,
 			layout,
 			adapter,
 			dataMode: 'server',
@@ -859,7 +883,7 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 				search: {
 					zone: 'topLine1',
 					order: 10,
-					label: 'Search',
+					label: MODULAR_GRID_STRINGS.search || 'Search',
 					placeholder: <?php echo json_encode($t('search_placeholder', 'Filter parser or class'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>
 				},
 				filters: {
@@ -904,7 +928,7 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 				reset: {
 					zone: 'topLine1',
 					order: 30,
-					label: 'Reset',
+					label: MODULAR_GRID_STRINGS.reset || 'Reset',
 					sections: ['query', 'filters', 'columns']
 				},
 				sessionStorage: {
@@ -949,9 +973,9 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 						defaultSortKey: 'name',
 						defaultSortDirection: 'asc',
 						sortOptions: [
-							{ key: 'name', label: 'Parser' },
-							{ key: 'class', label: 'Class' },
-							{ key: 'routeCount', label: 'Routes' }
+							{ key: 'name', label: <?php echo json_encode($t('column_parser', 'Parser'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?> },
+							{ key: 'class', label: <?php echo json_encode($t('class', 'Class'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?> },
+							{ key: 'routeCount', label: <?php echo json_encode($t('column_routes', 'Routes'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?> }
 						]
 					},
 					render(value, row) {
@@ -992,18 +1016,19 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 		});
 
 		grid.on('data:appended', ({ appendedCount, totalLoaded }) => {
-			setLog('Loaded ' + String(appendedCount) + ' more parsers. ' + String(totalLoaded) + ' rows are currently loaded.');
+			setLog(formatLabel(LABELS.loaded_more_parsers, { appended: appendedCount, total: totalLoaded }));
 		});
 
 		grid.on('detail:loaded', (event) => {
 			const row = event && typeof event === 'object' ? event.row : null;
-			setLog('Loaded parser detail for ' + text(row && row.name) + '.');
+			setLog(formatLabel(LABELS.loaded_parser_detail, { parser: text(row && row.name) }));
 		});
 		grid.on('detail:error', (event) => {
-			setLog('Failed to load parser detail: ' + text(event && event.error));
+			if (event && event.error) console.error(event.error);
+			setLog(LABELS.failed_parser_detail);
 		});
 
 		await grid.init();
-		setLog('ParseFlow parser explorer initialized.');
+		setLog(LABELS.initialized);
 	})();
 </script>

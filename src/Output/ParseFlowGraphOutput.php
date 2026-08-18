@@ -53,9 +53,29 @@ class ParseFlowGraphOutput implements IOutput {
 			'name' => self::getName(),
 			'out' => 'json'
 		]);
+		$strings = [
+			'statsParsers' => $this->t('graph_stats_parsers', 'Parsers'),
+			'statsRoutes' => $this->t('graph_stats_routes', 'Routes'),
+			'statsStates' => $this->t('graph_stats_states', 'States'),
+			'statsVisible' => $this->t('graph_stats_visible', 'Visible'),
+			'tableParser' => $this->t('graph_table_parser', 'Parser'),
+			'tableRoute' => $this->t('graph_table_route', 'Route'),
+			'tableFrom' => $this->t('graph_table_from', 'From'),
+			'tableTo' => $this->t('graph_table_to', 'To'),
+			'tableText' => $this->t('graph_table_text', 'Text'),
+			'tableStructure' => $this->t('graph_table_structure', 'Structure'),
+			'tableImage' => $this->t('graph_table_image', 'Image'),
+			'tableSpeed' => $this->t('graph_table_speed', 'Speed'),
+			'tableStability' => $this->t('graph_table_stability', 'Stability'),
+			'noNodes' => $this->t('graph_no_nodes', 'No graph nodes were returned. Check whether ParseFlow parser implementations are discovered.'),
+			'noMatches' => $this->t('graph_no_matches', 'No graph nodes match the current filters.'),
+			'requestFailed' => $this->t('graph_request_failed', 'Graph request failed.'),
+			'loadFailed' => $this->t('graph_load_failed', 'Could not load ParseFlow graph data.')
+		];
+		$stringsJson = json_encode($strings, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?: '{}';
 
 		return '\n<link rel="stylesheet" href="' . $this->escape($cssUrl) . '">\n'
-			. '<div class="parseflow-graph" data-parseflow-graph data-graph-url="' . $this->escape($jsonUrl) . '">\n'
+			. '<div class="parseflow-graph" data-parseflow-graph data-graph-url="' . $this->escape($jsonUrl) . '" data-graph-strings="' . $this->escape($stringsJson) . '">\n'
 			. '\t<div class="parseflow-graph__header">\n'
 			. '\t\t<div>\n'
 			. '\t\t\t<h2>' . $this->escape($this->t('graph_title', 'ParseFlow Graph')) . '</h2>\n'

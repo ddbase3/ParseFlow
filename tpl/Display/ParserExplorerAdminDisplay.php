@@ -6,6 +6,8 @@ $modularGridJsUrl = (string) $resolve('plugin/ClientStack/assets/modulargrid/ind
 $summary = is_array($this->_['summary'] ?? null) ? $this->_['summary'] : [];
 $options = is_array($this->_['options'] ?? null) ? $this->_['options'] : [];
 $translations = is_array($this->_['translations'] ?? null) ? $this->_['translations'] : [];
+$modularGridStrings = $this->getBricks('clientstack_modulargrid');
+$modularGridStrings = is_array($modularGridStrings) ? $modularGridStrings : [];
 $t = static fn(string $key, string $fallback): string => trim((string)($translations[$key] ?? '')) !== ''
 	? (string)$translations[$key]
 	: $fallback;
@@ -452,6 +454,59 @@ $summaryCards = [
 	const GRID_SELECTOR = '#parser-explorer-grid';
 	const LOG_SELECTOR = '#parser-explorer-output';
 	const OPTIONS = <?php echo json_encode($options, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
+	const MODULAR_GRID_STRINGS = <?php echo json_encode($modularGridStrings, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+	const LABELS = <?php echo json_encode([
+		'source' => $t('filter_source', 'Source'),
+		'input' => $t('filter_input', 'Input'),
+		'output' => $t('filter_output', 'Output'),
+		'target' => $t('filter_target', 'Target'),
+		'strategy' => $t('filter_strategy', 'Strategy'),
+		'external' => $t('filter_external', 'External'),
+		'lossy' => $t('filter_lossy', 'Lossy'),
+		'max_steps' => $t('filter_max_steps', 'Max steps'),
+		'last_action' => $t('last_action', 'Last action:'),
+		'none' => $t('none_label', 'None'),
+		'source_suffix' => $t('source_suffix', 'source'),
+		'target_suffix' => $t('target_suffix', 'target'),
+		'cost' => $t('cost', 'Cost'),
+		'steps' => $t('steps', 'Steps'),
+		'quality' => $t('quality', 'Quality'),
+		'speed' => $t('speed', 'Speed'),
+		'text_quality' => $t('text_quality', 'Text quality'),
+		'structure_quality' => $t('structure_quality', 'Structure quality'),
+		'layout_quality' => $t('layout_quality', 'Layout quality'),
+		'table_quality' => $t('table_quality', 'Table quality'),
+		'stability' => $t('stability', 'Stability'),
+		'combined_quality' => $t('combined_quality', 'Combined quality'),
+		'external_count' => $t('external_count', 'External count'),
+		'lossy_count' => $t('lossy_count', 'Lossy count'),
+		'monetary_cost' => $t('detail_monetary_cost', 'Monetary cost'),
+		'priority' => $t('priority', 'Priority'),
+		'flags' => $t('flags', 'Flags'),
+		'score' => $t('score', 'Score'),
+		'combination' => $t('combination', 'Combination'),
+		'parser_chain' => $t('detail_parser_chain', 'Parser chain'),
+		'route_chain' => $t('detail_route_chain', 'Route chain'),
+		'id' => $t('id', 'ID'),
+		'request_failed' => $t('request_failed', 'Request failed.'),
+		'missing_combination_row' => $t('missing_combination_row', 'Missing parser combination row.'),
+		'no_detail_data' => $t('no_detail_data', 'No detail data returned for parser combination.'),
+		'loading_detail' => $t('loading_detail', 'Loading parser combination detail...'),
+		'failed_detail' => $t('failed_detail', 'Failed to load detail.'),
+		'value' => $t('value', 'Value'),
+		'parser_combination' => $t('parser_combination', 'Parser combination'),
+		'copy_php' => $t('copy_php', 'Copy PHP'),
+		'copied_php' => $t('copied_php', 'Copied PHP parser request to clipboard.'),
+		'plan' => $t('plan', 'Plan'),
+		'php_request' => $t('php_request', 'PHP request'),
+		'add_filter' => $t('add_filter', 'Add filter'),
+		'select_optional_filter' => $t('select_optional_filter', 'Select optional filter'),
+		'remove_filter' => $t('remove_filter', 'Remove this filter'),
+		'copy_php_request' => $t('copy_php_request', 'Copy PHP request'),
+		'loaded_more' => $t('loaded_more', 'Loaded {appended} more parser combinations. {total} rows are currently loaded.'),
+		'loaded_detail' => $t('loaded_detail', 'Loaded detail for {input} -> {output}'),
+		'initialized' => $t('initialized', 'Parser explorer initialized. Showing a bounded top result set for the selected input/output conversion.'),
+	], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 	const BATCH_SIZE = 40;
 	const SORT_TYPES = {
 		totalCost: 'float',
@@ -474,14 +529,14 @@ $summaryCards = [
 	};
 	const DEFAULT_FILTERS = OPTIONS.defaults || {};
 	const FILTER_FIELDS = [
-		{ key: 'source_type', label: 'Source', defaultValue: DEFAULT_FILTERS.source_type || 'string', alwaysVisible: true },
-		{ key: 'input_state', label: 'Input', defaultValue: DEFAULT_FILTERS.input_state || '', alwaysVisible: true },
-		{ key: 'output_state', label: 'Output', defaultValue: DEFAULT_FILTERS.output_state || '', alwaysVisible: true },
-		{ key: 'target_type', label: 'Target', defaultValue: DEFAULT_FILTERS.target_type || 'return', alwaysVisible: true },
-		{ key: 'strategy', label: 'Strategy', defaultValue: DEFAULT_FILTERS.strategy || 'balanced' },
-		{ key: 'allow_external', label: 'External', defaultValue: DEFAULT_FILTERS.allow_external || 'no' },
-		{ key: 'allow_lossy', label: 'Lossy', defaultValue: DEFAULT_FILTERS.allow_lossy || 'yes' },
-		{ key: 'max_steps', label: 'Max steps', defaultValue: DEFAULT_FILTERS.max_steps || '5' }
+		{ key: 'source_type', label: LABELS.source, defaultValue: DEFAULT_FILTERS.source_type || 'string', alwaysVisible: true },
+		{ key: 'input_state', label: LABELS.input, defaultValue: DEFAULT_FILTERS.input_state || '', alwaysVisible: true },
+		{ key: 'output_state', label: LABELS.output, defaultValue: DEFAULT_FILTERS.output_state || '', alwaysVisible: true },
+		{ key: 'target_type', label: LABELS.target, defaultValue: DEFAULT_FILTERS.target_type || 'return', alwaysVisible: true },
+		{ key: 'strategy', label: LABELS.strategy, defaultValue: DEFAULT_FILTERS.strategy || 'balanced' },
+		{ key: 'allow_external', label: LABELS.external, defaultValue: DEFAULT_FILTERS.allow_external || 'no' },
+		{ key: 'allow_lossy', label: LABELS.lossy, defaultValue: DEFAULT_FILTERS.allow_lossy || 'yes' },
+		{ key: 'max_steps', label: LABELS.max_steps, defaultValue: DEFAULT_FILTERS.max_steps || '5' }
 	];
 	const OPTIONAL_FILTER_FIELDS = FILTER_FIELDS.filter((field) => !field.alwaysVisible);
 	const FILTER_DEFAULTS = FILTER_FIELDS.reduce((carry, field) => {
@@ -517,6 +572,12 @@ $summaryCards = [
 		]
 	};
 
+	function formatLabel(template, replacements = {}) {
+		return Object.entries(replacements).reduce((value, [key, replacement]) => {
+			return value.replaceAll('{' + key + '}', String(replacement));
+		}, String(template || ''));
+	}
+
 	function setLog(message) {
 		const logElement = document.querySelector(LOG_SELECTOR);
 
@@ -527,10 +588,10 @@ $summaryCards = [
 		logElement.replaceChildren();
 
 		const label = document.createElement('strong');
-		label.textContent = 'Last action:';
+		label.textContent = LABELS.last_action;
 
 		logElement.appendChild(label);
-		logElement.appendChild(document.createTextNode(' ' + getText(message, 'None')));
+		logElement.appendChild(document.createTextNode(' ' + getText(message, LABELS.none)));
 	}
 
 	function getText(value, placeholder = '-') {
@@ -587,7 +648,7 @@ $summaryCards = [
 	}
 
 	function renderCombination(value, row) {
-		return cellStack(getText(row.inputState) + ' -> ' + getText(row.outputState), getText(row.sourceType) + ' source -> ' + getText(row.targetType) + ' target');
+		return cellStack(getText(row.inputState) + ' -> ' + getText(row.outputState), getText(row.sourceType) + ' ' + LABELS.source_suffix + ' -> ' + getText(row.targetType) + ' ' + LABELS.target_suffix);
 	}
 
 	function renderParserChain(value, row) {
@@ -596,19 +657,19 @@ $summaryCards = [
 
 	function renderScore(value, row) {
 		const wrapper = createElement('div', 'parser-explorer-pill-row');
-		wrapper.appendChild(pill('cost ' + formatCost(row.totalCost), 'parser-explorer-pill-strong'));
-		wrapper.appendChild(pill('steps ' + getText(row.steps, '0')));
-		wrapper.appendChild(pill('quality ' + formatPercent(row.qualityPercent)));
-		wrapper.appendChild(pill('speed ' + formatPercent(row.speedPercent)));
+		wrapper.appendChild(pill(LABELS.cost.toLowerCase() + ' ' + formatCost(row.totalCost), 'parser-explorer-pill-strong'));
+		wrapper.appendChild(pill(LABELS.steps.toLowerCase() + ' ' + getText(row.steps, '0')));
+		wrapper.appendChild(pill(LABELS.quality.toLowerCase() + ' ' + formatPercent(row.qualityPercent)));
+		wrapper.appendChild(pill(LABELS.speed.toLowerCase() + ' ' + formatPercent(row.speedPercent)));
 		return wrapper;
 	}
 
 	function renderQuality(value, row) {
 		const wrapper = createElement('div', 'parser-explorer-pill-row');
-		wrapper.appendChild(pill('text ' + formatPercent(row.textQualityPercent)));
-		wrapper.appendChild(pill('structure ' + formatPercent(row.structureQualityPercent)));
-		wrapper.appendChild(pill('layout ' + formatPercent(row.layoutQualityPercent)));
-		wrapper.appendChild(pill('table ' + formatPercent(row.tableQualityPercent)));
+		wrapper.appendChild(pill(LABELS.text_quality + ' ' + formatPercent(row.textQualityPercent)));
+		wrapper.appendChild(pill(LABELS.structure_quality + ' ' + formatPercent(row.structureQualityPercent)));
+		wrapper.appendChild(pill(LABELS.layout_quality + ' ' + formatPercent(row.layoutQualityPercent)));
+		wrapper.appendChild(pill(LABELS.table_quality + ' ' + formatPercent(row.tableQualityPercent)));
 		return wrapper;
 	}
 
@@ -617,15 +678,15 @@ $summaryCards = [
 		wrapper.appendChild(pill(getText(row.strategy, 'balanced'), 'parser-explorer-pill-strong'));
 
 		if (Number(row.externalCount || 0) > 0) {
-			wrapper.appendChild(pill('external ' + String(row.externalCount), 'parser-explorer-pill-warning'));
+			wrapper.appendChild(pill(LABELS.external.toLowerCase() + ' ' + String(row.externalCount), 'parser-explorer-pill-warning'));
 		}
 
 		if (Number(row.lossyCount || 0) > 0) {
-			wrapper.appendChild(pill('lossy ' + String(row.lossyCount), 'parser-explorer-pill-warning'));
+			wrapper.appendChild(pill(LABELS.lossy.toLowerCase() + ' ' + String(row.lossyCount), 'parser-explorer-pill-warning'));
 		}
 
 		if (Number(row.monetaryCost || 0) > 0) {
-			wrapper.appendChild(pill('cost $ ' + formatCost(row.monetaryCost), 'parser-explorer-pill-warning'));
+			wrapper.appendChild(pill(LABELS.cost.toLowerCase() + ' $ ' + formatCost(row.monetaryCost), 'parser-explorer-pill-warning'));
 		}
 
 		return wrapper;
@@ -666,7 +727,7 @@ $summaryCards = [
 		});
 
 		if (!response.ok) {
-			throw new Error('Request failed with status ' + String(response.status));
+			throw new Error(LABELS.request_failed + ' (' + String(response.status) + ')');
 		}
 
 		return response.json();
@@ -676,7 +737,7 @@ $summaryCards = [
 		const row = context && context.row ? context.row : null;
 
 		if (!row) {
-			throw new Error('Missing parser combination row.');
+			throw new Error(LABELS.missing_combination_row);
 		}
 
 		if (row.detail) {
@@ -692,18 +753,19 @@ $summaryCards = [
 		});
 
 		if (!response || !response.found || !response.detail) {
-			throw new Error('No detail data returned for parser combination.');
+			throw new Error(LABELS.no_detail_data);
 		}
 
 		return response.detail;
 	}
 
 	function createDetailLoadingPlaceholder(context) {
-		return createElement('div', 'parser-explorer-detail-summary', 'Loading parser combination detail...');
+		return createElement('div', 'parser-explorer-detail-summary', LABELS.loading_detail);
 	}
 
 	function createDetailErrorPlaceholder(context) {
-		return createElement('div', 'parser-explorer-detail-summary', 'Failed to load detail: ' + getText(context && context.error));
+		if (context && context.error) console.error(context.error);
+		return createElement('div', 'parser-explorer-detail-summary', LABELS.failed_detail);
 	}
 
 	function section(title, content) {
@@ -718,7 +780,7 @@ $summaryCards = [
 
 		(rows || []).forEach((row) => {
 			const item = createElement('div', 'parser-explorer-field');
-			item.appendChild(createElement('div', 'parser-explorer-field-label', row.label || row.key || 'Value'));
+			item.appendChild(createElement('div', 'parser-explorer-field-label', row.label || row.key || LABELS.value));
 			item.appendChild(createElement('div', 'parser-explorer-field-value', getText(row.value)));
 			list.appendChild(item);
 		});
@@ -732,7 +794,7 @@ $summaryCards = [
 		(steps || []).forEach((step) => {
 			const item = createElement('div', 'parser-explorer-step');
 			item.appendChild(createElement('div', 'parser-explorer-cell-main', String(step.index || '?') + '. ' + getText(step.parserName) + ' / ' + getText(step.routeName)));
-			item.appendChild(createElement('div', 'parser-explorer-cell-sub', getText(step.from) + ' -> ' + getText(step.to) + ' | cost ' + formatCost(step.cost)));
+			item.appendChild(createElement('div', 'parser-explorer-cell-sub', getText(step.from) + ' -> ' + getText(step.to) + ' | ' + LABELS.cost.toLowerCase() + ' ' + formatCost(step.cost)));
 			list.appendChild(item);
 		});
 
@@ -780,11 +842,11 @@ $summaryCards = [
 		const headerText = createElement('div', 'parser-explorer-cell-stack');
 		const actions = createElement('div', 'parser-explorer-detail-actions');
 
-		headerText.appendChild(createElement('div', 'parser-explorer-detail-title', getText(payload.headline, 'Parser combination')));
+		headerText.appendChild(createElement('div', 'parser-explorer-detail-title', getText(payload.headline, LABELS.parser_combination)));
 		headerText.appendChild(createElement('div', 'parser-explorer-detail-summary', getText(payload.summary, '')));
-		actions.appendChild(button('Copy PHP', async () => {
+		actions.appendChild(button(LABELS.copy_php, async () => {
 			await writeClipboardText(getText(payload.phpCode, ''));
-			setLog('Copied PHP parser request to clipboard.');
+			setLog(LABELS.copied_php);
 		}));
 		header.appendChild(headerText);
 		header.appendChild(actions);
@@ -800,13 +862,13 @@ $summaryCards = [
 		const left = createElement('div', 'parser-explorer-detail-left');
 		const right = createElement('div', 'parser-explorer-detail-right');
 
-		left.appendChild(section('Plan', renderFieldList(payload.sections || [])));
-		left.appendChild(section('Steps', renderSteps(payload.steps || [])));
+		left.appendChild(section(LABELS.plan, renderFieldList(payload.sections || [])));
+		left.appendChild(section(LABELS.steps, renderSteps(payload.steps || [])));
 
 		const code = document.createElement('pre');
 		code.className = 'parser-explorer-code';
 		code.textContent = getText(payload.phpCode, '');
-		right.appendChild(section('PHP request', code));
+		right.appendChild(section(LABELS.php_request, code));
 
 		layout.appendChild(left);
 		layout.appendChild(right);
@@ -895,7 +957,7 @@ $summaryCards = [
 
 		const label = document.createElement('span');
 		label.className = 'mg-label';
-		label.textContent = 'Add filter';
+		label.textContent = LABELS.add_filter;
 
 		const select = document.createElement('select');
 		select.className = 'mg-select';
@@ -940,7 +1002,7 @@ $summaryCards = [
 
 		const placeholder = document.createElement('option');
 		placeholder.value = '';
-		placeholder.textContent = 'Select optional filter';
+		placeholder.textContent = LABELS.select_optional_filter;
 		select.appendChild(placeholder);
 
 		optionKeys.forEach((key) => {
@@ -968,7 +1030,7 @@ $summaryCards = [
 		const button = document.createElement('button');
 		button.type = 'button';
 		button.className = 'parser-explorer-optional-filter-remove';
-		button.title = 'Remove this filter';
+		button.title = LABELS.remove_filter;
 		button.textContent = '×';
 		button.addEventListener('click', (event) => {
 			event.preventDefault();
@@ -1099,6 +1161,7 @@ $summaryCards = [
 		});
 
 		grid = new ModularGrid(GRID_SELECTOR, {
+			strings: MODULAR_GRID_STRINGS,
 			layout,
 			adapter,
 			dataMode: 'server',
@@ -1130,69 +1193,69 @@ $summaryCards = [
 				search: {
 					zone: 'topLine1',
 					order: 10,
-					label: 'Search',
-					placeholder: 'Search within selected conversion'
+					label: MODULAR_GRID_STRINGS.search || 'Search',
+					placeholder: <?php echo json_encode($t('search_placeholder', 'Search within selected conversion'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>
 				},
 				filters: {
 					zone: 'topLine2',
 					order: 10,
 					stateKey: 'filters',
 					showClearButton: false,
-					clearLabel: 'Clear filters',
+					clearLabel: MODULAR_GRID_STRINGS.clearFilters || 'Clear filters',
 					fields: [
 						{
 							key: 'source_type',
 							defaultValue: FILTER_DEFAULTS.source_type || '',
-							label: 'Source',
+							label: LABELS.source,
 							type: 'select',
 							options: OPTIONS.sourceTypes || []
 						},
 						{
 							key: 'input_state',
 							defaultValue: FILTER_DEFAULTS.input_state || '',
-							label: 'Input',
+							label: LABELS.input,
 							type: 'select',
 							options: OPTIONS.inputStates || []
 						},
 						{
 							key: 'output_state',
 							defaultValue: FILTER_DEFAULTS.output_state || '',
-							label: 'Output',
+							label: LABELS.output,
 							type: 'select',
 							options: OPTIONS.outputStates || []
 						},
 						{
 							key: 'target_type',
 							defaultValue: FILTER_DEFAULTS.target_type || '',
-							label: 'Target',
+							label: LABELS.target,
 							type: 'select',
 							options: OPTIONS.targetTypes || []
 						},
 						{
 							key: 'strategy',
 							defaultValue: FILTER_DEFAULTS.strategy || '',
-							label: 'Strategy',
+							label: LABELS.strategy,
 							type: 'select',
 							options: OPTIONS.strategies || []
 						},
 						{
 							key: 'allow_external',
 							defaultValue: FILTER_DEFAULTS.allow_external || '',
-							label: 'External',
+							label: LABELS.external,
 							type: 'select',
 							options: OPTIONS.boolean || []
 						},
 						{
 							key: 'allow_lossy',
 							defaultValue: FILTER_DEFAULTS.allow_lossy || '',
-							label: 'Lossy',
+							label: LABELS.lossy,
 							type: 'select',
 							options: OPTIONS.boolean || []
 						},
 						{
 							key: 'max_steps',
 							defaultValue: FILTER_DEFAULTS.max_steps || '',
-							label: 'Max steps',
+							label: LABELS.max_steps,
 							type: 'select',
 							options: OPTIONS.maxSteps || []
 						}
@@ -1209,7 +1272,7 @@ $summaryCards = [
 				reset: {
 					zone: 'topLine1',
 					order: 20,
-					label: 'Reset',
+					label: MODULAR_GRID_STRINGS.reset || 'Reset',
 					sections: ['query', 'filters', 'columns']
 				},
 				sessionStorage: {
@@ -1228,20 +1291,20 @@ $summaryCards = [
 						items: [
 							{
 								type: 'columnVisibility',
-								label: 'Columns',
+								label: MODULAR_GRID_STRINGS.columns || 'Columns',
 								showReset: true,
-								resetLabel: 'Reset columns'
+								resetLabel: MODULAR_GRID_STRINGS.resetColumns || 'Reset columns'
 							}
 						]
 					},
 					items: [
 						{
 							key: 'copy-php',
-							label: 'Copy PHP request',
+							label: LABELS.copy_php_request,
 							onClick: async (context) => {
 								const detail = await loadRemoteDetail(context);
 								await writeClipboardText(getText(detail.phpCode, ''));
-								setLog('Copied PHP parser request to clipboard.');
+								setLog(LABELS.copied_php);
 							}
 						}
 					]
@@ -1273,16 +1336,16 @@ $summaryCards = [
 			columns: [
 				{
 					key: 'inputState',
-					label: 'Combination',
+					label: LABELS.combination,
 					width: 310,
 					headerMenu: {
 						defaultSortKey: 'inputState',
 						defaultSortDirection: 'asc',
 						sortOptions: [
-							{ key: 'inputState', label: 'Input' },
-							{ key: 'outputState', label: 'Output' },
-							{ key: 'totalCost', label: 'Cost' },
-							{ key: 'steps', label: 'Steps' }
+							{ key: 'inputState', label: LABELS.input },
+							{ key: 'outputState', label: LABELS.output },
+							{ key: 'totalCost', label: LABELS.cost },
+							{ key: 'steps', label: LABELS.steps }
 						]
 					},
 					render(value, row) {
@@ -1291,7 +1354,7 @@ $summaryCards = [
 				},
 				{
 					key: 'parserChain',
-					label: 'Parser chain',
+					label: LABELS.parser_chain,
 					width: 430,
 					textDisplay: {
 						strategy: 'clamp',
@@ -1302,10 +1365,10 @@ $summaryCards = [
 						defaultSortKey: 'parserChain',
 						defaultSortDirection: 'asc',
 						sortOptions: [
-							{ key: 'parserChain', label: 'Parser chain' },
-							{ key: 'routeChain', label: 'Route chain' },
-							{ key: 'totalCost', label: 'Cost' },
-							{ key: 'qualityPercent', label: 'Combined quality' }
+							{ key: 'parserChain', label: LABELS.parser_chain },
+							{ key: 'routeChain', label: LABELS.route_chain },
+							{ key: 'totalCost', label: LABELS.cost },
+							{ key: 'qualityPercent', label: LABELS.combined_quality }
 						]
 					},
 					render(value, row) {
@@ -1314,17 +1377,17 @@ $summaryCards = [
 				},
 				{
 					key: 'totalCost',
-					label: 'Score',
+					label: LABELS.score,
 					width: 270,
 					headerMenu: {
 						defaultSortKey: 'totalCost',
 						defaultSortDirection: 'asc',
 						sortOptions: [
-							{ key: 'totalCost', label: 'Cost' },
-							{ key: 'steps', label: 'Steps' },
-							{ key: 'qualityPercent', label: 'Combined quality' },
-							{ key: 'speedPercent', label: 'Speed' },
-							{ key: 'stabilityPercent', label: 'Stability' }
+							{ key: 'totalCost', label: LABELS.cost },
+							{ key: 'steps', label: LABELS.steps },
+							{ key: 'qualityPercent', label: LABELS.combined_quality },
+							{ key: 'speedPercent', label: LABELS.speed },
+							{ key: 'stabilityPercent', label: LABELS.stability }
 						]
 					},
 					render(value, row) {
@@ -1333,17 +1396,17 @@ $summaryCards = [
 				},
 				{
 					key: 'qualityPercent',
-					label: 'Quality',
+					label: LABELS.quality,
 					width: 320,
 					headerMenu: {
 						defaultSortKey: 'qualityPercent',
 						defaultSortDirection: 'desc',
 						sortOptions: [
-							{ key: 'qualityPercent', label: 'Combined quality' },
-							{ key: 'textQualityPercent', label: 'Text quality' },
-							{ key: 'structureQualityPercent', label: 'Structure quality' },
-							{ key: 'layoutQualityPercent', label: 'Layout quality' },
-							{ key: 'tableQualityPercent', label: 'Table quality' }
+							{ key: 'qualityPercent', label: LABELS.combined_quality },
+							{ key: 'textQualityPercent', label: LABELS.text_quality },
+							{ key: 'structureQualityPercent', label: LABELS.structure_quality },
+							{ key: 'layoutQualityPercent', label: LABELS.layout_quality },
+							{ key: 'tableQualityPercent', label: LABELS.table_quality }
 						]
 					},
 					render(value, row) {
@@ -1352,16 +1415,16 @@ $summaryCards = [
 				},
 				{
 					key: 'strategy',
-					label: 'Flags',
+					label: LABELS.flags,
 					width: 230,
 					headerMenu: {
 						defaultSortKey: 'externalCount',
 						defaultSortDirection: 'desc',
 						sortOptions: [
-							{ key: 'externalCount', label: 'External count' },
-							{ key: 'lossyCount', label: 'Lossy count' },
-							{ key: 'monetaryCost', label: 'Monetary cost' },
-							{ key: 'priority', label: 'Priority' }
+							{ key: 'externalCount', label: LABELS.external_count },
+							{ key: 'lossyCount', label: LABELS.lossy_count },
+							{ key: 'monetaryCost', label: LABELS.monetary_cost },
+							{ key: 'priority', label: LABELS.priority }
 						]
 					},
 					render(value, row) {
@@ -1370,7 +1433,7 @@ $summaryCards = [
 				},
 				{
 					key: 'routeChain',
-					label: 'Route chain',
+					label: LABELS.route_chain,
 					width: 420,
 					visible: false,
 					textDisplay: {
@@ -1382,13 +1445,13 @@ $summaryCards = [
 						defaultSortKey: 'routeChain',
 						defaultSortDirection: 'asc',
 						sortOptions: [
-							{ key: 'routeChain', label: 'Route chain' }
+							{ key: 'routeChain', label: LABELS.route_chain }
 						]
 					}
 				},
 				{
 					key: 'id',
-					label: 'ID',
+					label: LABELS.id,
 					width: 140,
 					visible: false
 				}
@@ -1396,22 +1459,23 @@ $summaryCards = [
 		});
 
 		grid.on('data:appended', ({ appendedCount, totalLoaded }) => {
-			setLog('Loaded ' + String(appendedCount) + ' more parser combinations. ' + String(totalLoaded) + ' rows are currently loaded.');
+			setLog(formatLabel(LABELS.loaded_more, { appended: appendedCount, total: totalLoaded }));
 		});
 
 		grid.on('detail:loaded', (event) => {
 			const row = event && typeof event === 'object' ? event.row : null;
-			setLog('Loaded detail for ' + getText(row && row.inputState) + ' -> ' + getText(row && row.outputState));
+			setLog(formatLabel(LABELS.loaded_detail, { input: getText(row && row.inputState), output: getText(row && row.outputState) }));
 		});
 
 		grid.on('detail:error', (event) => {
 			const detailError = event && typeof event === 'object' ? event.error : null;
-			setLog('Failed to load detail: ' + getText(detailError));
+			if (detailError) console.error(detailError);
+			setLog(LABELS.failed_detail);
 		});
 
 		await grid.init();
 		applyDefaultFilterControlValues(root);
 		initializeOptionalFilterControls(root);
-		setLog('Parser explorer initialized. Showing a bounded top result set for the selected input/output conversion.');
+		setLog(LABELS.initialized);
 	})();
 </script>

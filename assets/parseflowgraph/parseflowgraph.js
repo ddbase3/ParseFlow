@@ -15,6 +15,22 @@
 		});
 	}
 
+	function strings(root) {
+		var raw = root.getAttribute('data-graph-strings') || '{}';
+		try {
+			var parsed = JSON.parse(raw);
+			return parsed && typeof parsed === 'object' ? parsed : {};
+		} catch (error) {
+			console.error(error);
+			return {};
+		}
+	}
+
+	function tr(root, key, fallback) {
+		var value = strings(root)[key];
+		return value === null || value === undefined || String(value).trim() === '' ? fallback : String(value);
+	}
+
 	function option(value, label) {
 		var item = document.createElement('option');
 		item.value = value;
@@ -32,10 +48,10 @@
 		var stats = root.querySelector('[data-role="stats"]');
 		clear(stats);
 		[
-			['Parsers', data.parsers ? data.parsers.length : 0],
-			['Routes', data.routes ? data.routes.length : 0],
-			['States', data.nodes ? data.nodes.length : 0],
-			['Visible', visibleNodes.length + ' / ' + visibleEdges.length + ' / ' + visibleRoutes.length]
+			[tr(root, 'statsParsers', 'Parsers'), data.parsers ? data.parsers.length : 0],
+			[tr(root, 'statsRoutes', 'Routes'), data.routes ? data.routes.length : 0],
+			[tr(root, 'statsStates', 'States'), data.nodes ? data.nodes.length : 0],
+			[tr(root, 'statsVisible', 'Visible'), visibleNodes.length + ' / ' + visibleEdges.length + ' / ' + visibleRoutes.length]
 		].forEach(function (row) {
 			var item = document.createElement('span');
 			item.className = 'parseflow-graph__stat';
@@ -143,7 +159,17 @@
 		var tbody = document.createElement('tbody');
 		var headRow = document.createElement('tr');
 
-		['Parser', 'Route', 'From', 'To', 'Text', 'Structure', 'Image', 'Speed', 'Stability'].forEach(function (heading) {
+		[
+			tr(root, 'tableParser', 'Parser'),
+			tr(root, 'tableRoute', 'Route'),
+			tr(root, 'tableFrom', 'From'),
+			tr(root, 'tableTo', 'To'),
+			tr(root, 'tableText', 'Text'),
+			tr(root, 'tableStructure', 'Structure'),
+			tr(root, 'tableImage', 'Image'),
+			tr(root, 'tableSpeed', 'Speed'),
+			tr(root, 'tableStability', 'Stability')
+		].forEach(function (heading) {
 			var th = document.createElement('th');
 			th.textContent = heading;
 			headRow.appendChild(th);
@@ -239,9 +265,9 @@
 		renderGrid(root, visibleRoutes);
 
 		if (!nodes.length) {
-			message.textContent = 'No graph nodes were returned by the JSON endpoint. Check whether ClassMap discovers ParseFlow\\Api\\IParser implementations.';
+			message.textContent = tr(root, 'noNodes', 'No graph nodes were returned. Check whether ParseFlow parser implementations are discovered.');
 		} else if (!visibleNodes.length) {
-			message.textContent = 'No graph nodes match the current filters.';
+			message.textContent = tr(root, 'noMatches', 'No graph nodes match the current filters.');
 		} else {
 			message.textContent = '';
 		}
@@ -254,7 +280,7 @@
 		fetch(url, { headers: { Accept: 'application/json' } })
 			.then(function (response) {
 				if (!response.ok) {
-					throw new Error('HTTP ' + response.status);
+					throw new Error(tr(root, 'requestFailed', 'Graph request failed.') + ' (' + response.status + ')');
 				}
 				return response.json();
 			})
@@ -277,7 +303,8 @@
 				render(root, data);
 			})
 			.catch(function (error) {
-				message.textContent = 'Could not load ParseFlow graph data: ' + error.message;
+				console.error(error);
+				message.textContent = tr(root, 'loadFailed', 'Could not load ParseFlow graph data.');
 			});
 	}
 
