@@ -1450,3 +1450,8 @@ Parsers declare what they can transform. The service plans the best route. The e
 
 This keeps parsing extensible, testable and explainable while following BASE3 conventions.
 
+
+## Documentation
+
+- [Frequently Asked Questions](docs/faq.md)
+- [Privacy and data processing](PRIVACY.md)
