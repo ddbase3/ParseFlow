@@ -76,7 +76,7 @@ final class ParserAdminDisplay implements IDisplay {
 	}
 
 	private function handleHtml(): string {
-		$this->view->setPath(DIR_PLUGIN . 'ParseFlow');
+		$this->view->setPath(dirname(__DIR__, 2));
 		$this->view->setTemplate('Display/ParserAdminDisplay.php');
 		$this->view->assign('service', $this->linkTargetService->getLink([
 			'name' => self::getName(),
@@ -605,7 +605,7 @@ final class ParserAdminDisplay implements IDisplay {
 	}
 
 	private function loadTranslations(): void {
-		$this->view->setPath(DIR_PLUGIN . 'ParseFlow');
+		$this->view->setPath(dirname(__DIR__, 2));
 		$this->view->loadBricks('Display');
 
 		$translations = $this->view->getBricks('parser_admin_display');

@@ -93,7 +93,7 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 	}
 
 	private function handleHtml(): string {
-		$this->view->setPath(DIR_PLUGIN . 'ParseFlow');
+		$this->view->setPath(dirname(__DIR__, 2));
 		$this->view->setTemplate('Display/ParserExplorerAdminDisplay.php');
 
 		$this->view->assign(
@@ -1373,7 +1373,7 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 	}
 
 	private function loadTranslations(): void {
-		$this->view->setPath(DIR_PLUGIN . 'ParseFlow');
+		$this->view->setPath(dirname(__DIR__, 2));
 		$this->view->loadBricks('Display');
 
 		$translations = $this->view->getBricks('parser_explorer_admin_display');
