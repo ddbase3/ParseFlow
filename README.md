@@ -1160,6 +1160,12 @@ After installation:
 7. run a simple `ParserRequest` against `IParserService`
 8. test at least one direct and one multi-step route
 
+## CSV compatibility
+
+The CSV readers and writers explicitly use comma as separator, double quote as enclosure,
+and backslash as the escape character. This preserves the existing PHP CSV behavior
+and avoids the PHP 8.4 deprecation for omitted escape arguments.
+
 ## Development workflow
 
 Recommended flow for adding a parser:
@@ -1455,8 +1461,3 @@ This keeps parsing extensible, testable and explainable while following BASE3 co
 
 - [Frequently Asked Questions](docs/faq.md)
 - [Privacy and data processing](PRIVACY.md)
-
-
-## Settings navigation
-
-`ParseFlow` contributes a Parser group with parser route exploration and parser configuration entries. These use discoverable feature-backed `ISettingsTab` instances and require the host's native `system/admin` permission for direct HTML/JSON administration access. Parser configuration write operations use the current session's CSRF token. Existing parser execution and service contracts remain unchanged.

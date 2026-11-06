@@ -83,7 +83,7 @@ class CsvParserHelper {
 		fwrite($fh, $text);
 		rewind($fh);
 		$rows = [];
-		while (($row = fgetcsv($fh)) !== false) {
+		while (($row = fgetcsv($fh, null, ',', '"', '\\')) !== false) {
 			$rows[] = $row;
 		}
 		fclose($fh);

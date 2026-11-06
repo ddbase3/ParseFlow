@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="test/bootstrap.php" colors="true" failOnWarning="true" failOnRisky="true" beStrictAboutTestsThatDoNotTestAnything="true">
+  <testsuites>
+    <testsuite name="ParseFlow">
+      <directory suffix="Test.php">test</directory>
+    </testsuite>
+  </testsuites>
+  <coverage includeUncoveredFiles="true"/>
+  <source>
+    <include><directory suffix=".php">src</directory></include>
+  </source>
+</phpunit>

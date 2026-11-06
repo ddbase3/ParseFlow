@@ -61,7 +61,7 @@ class ParserValueHelper {
 	public static function csvString(array $rows): string {
 		$fh = fopen('php://temp', 'r+');
 		foreach ($rows as $row) {
-			fputcsv($fh, is_array($row) ? $row : [$row]);
+			fputcsv($fh, is_array($row) ? $row : [$row], ',', '"', '\\');
 		}
 		rewind($fh);
 		$out = stream_get_contents($fh);
