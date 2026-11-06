@@ -19,8 +19,11 @@ namespace ParseFlow\Display;
 use Base3\Api\IAssetResolver;
 use Base3\Api\IClassMap;
 use Base3\Api\IDisplay;
+use Base3\Authorization\Api\IAuthorizationService;
+use UiFoundation\Settings\SettingsAdministrationAccess;
 use Base3\Api\IMvcView;
 use Base3\Api\IRequest;
+use Base3\Session\Api\ISession;
 use Base3\Api\ISchemaProvider;
 use Base3\LinkTarget\Api\ILinkTargetService;
 use Base3\Settings\Api\ISettingsStore;
@@ -42,6 +45,7 @@ final class ParserAdminDisplay implements IDisplay {
 	private const MAX_PAGE_SIZE = 100;
 
 	private array $translations = [];
+	private const CSRF_KEY = 'parseflow.admin.csrf';
 
 	public function __construct(
 		private readonly IRequest $request,
@@ -49,7 +53,9 @@ final class ParserAdminDisplay implements IDisplay {
 		private readonly IAssetResolver $assetResolver,
 		private readonly ILinkTargetService $linkTargetService,
 		private readonly IClassMap $classMap,
-		private readonly ISettingsStore $settingsStore
+		private readonly ISettingsStore $settingsStore,
+		private readonly IAuthorizationService $settingsAuthorization,
+		private readonly ISession $session
 	) {}
 
 	public static function getName(): string {
@@ -66,6 +72,13 @@ final class ParserAdminDisplay implements IDisplay {
 	}
 
 	public function getOutput(string $out = 'html', bool $final = false): string {
+		if (!SettingsAdministrationAccess::isAllowed(
+			$this->settingsAuthorization, \ParseFlow\SettingsTab\ParseflowparseradminSettingsTab::getName()
+		)) {
+			http_response_code(403);
+			return '';
+		}
+
 		$this->loadTranslations();
 
 		if(strtolower($out) === 'json') {
@@ -84,6 +97,7 @@ final class ParserAdminDisplay implements IDisplay {
 		]));
 		$this->view->assign('resolve', fn($src) => $this->assetResolver->resolve((string)$src));
 		$this->view->assign('translations', $this->translations);
+		$this->view->assign('csrfToken', $this->csrfToken());
 
 		return $this->view->loadTemplate();
 	}
@@ -92,6 +106,10 @@ final class ParserAdminDisplay implements IDisplay {
 		try {
 			$request = $this->readRequestPayload();
 			$mode = trim((string)($request['mode'] ?? 'page'));
+			if (in_array($mode, ['save', 'reset'], true) && !$this->validCsrf($request)) {
+				http_response_code(403);
+				throw new RuntimeException($this->t('invalid_request', 'Invalid request.'));
+			}
 
 			$response = match($mode) {
 				'page' => $this->buildPageResponse($request),
@@ -118,6 +136,23 @@ final class ParserAdminDisplay implements IDisplay {
 	/**
 	 * @return array<string,mixed>
 	 */
+	private function csrfToken(): string {
+		$token = $this->session->get(self::CSRF_KEY, '');
+		if (!is_string($token) || strlen($token) !== 64) {
+			$token = bin2hex(random_bytes(32));
+			$this->session->set(self::CSRF_KEY, $token);
+		}
+		return $token;
+	}
+
+	private function validCsrf(array $payload): bool {
+		$token = $this->session->get(self::CSRF_KEY, '');
+		return strtoupper((string)$this->request->server('REQUEST_METHOD', '')) === 'POST'
+			&& is_string($token) && strlen($token) === 64
+			&& is_string($payload['csrf'] ?? null)
+			&& hash_equals($token, $payload['csrf']);
+	}
+
 	private function readRequestPayload(): array {
 		$payload = $this->request->getJsonBody();
 		if(is_array($payload) && $payload !== []) {

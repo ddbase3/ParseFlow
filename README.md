@@ -1455,3 +1455,8 @@ This keeps parsing extensible, testable and explainable while following BASE3 co
 
 - [Frequently Asked Questions](docs/faq.md)
 - [Privacy and data processing](PRIVACY.md)
+
+
+## Settings navigation
+
+`ParseFlow` contributes a Parser group with parser route exploration and parser configuration entries. These use discoverable feature-backed `ISettingsTab` instances and require the host's native `system/admin` permission for direct HTML/JSON administration access. Parser configuration write operations use the current session's CSRF token. Existing parser execution and service contracts remain unchanged.

@@ -18,6 +18,8 @@ namespace ParseFlow\Display;
 
 use Base3\Api\IAssetResolver;
 use Base3\Api\IDisplay;
+use Base3\Authorization\Api\IAuthorizationService;
+use UiFoundation\Settings\SettingsAdministrationAccess;
 use Base3\Api\IMvcView;
 use Base3\Api\IRequest;
 use Base3\LinkTarget\Api\ILinkTargetService;
@@ -61,7 +63,8 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 		private readonly IMvcView $view,
 		private readonly IAssetResolver $assetResolver,
 		private readonly ILinkTargetService $linkTargetService,
-		private readonly IParserService $parserService
+		private readonly IParserService $parserService,
+		private readonly IAuthorizationService $settingsAuthorization
 	) {
 		$this->matcher = new ParserStateMatcher();
 		$this->scoreCalculator = new ParserScoreCalculator();
@@ -82,6 +85,13 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 	}
 
 	public function getOutput(string $out = 'html', bool $final = false): string {
+		if (!SettingsAdministrationAccess::isAllowed(
+			$this->settingsAuthorization, \ParseFlow\SettingsTab\ParserexploreradminSettingsTab::getName()
+		)) {
+			http_response_code(403);
+			return '';
+		}
+
 		$this->loadTranslations();
 		$out = strtolower((string) $out);
 

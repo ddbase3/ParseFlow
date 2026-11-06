@@ -625,3 +625,7 @@ Before enabling an additional parser implementation, verify:
 The current ParseFlow core is primarily a local, transient transformation engine. It does not automatically send content to external services, does not maintain a document database, does not keep a parse history and does not log parser bodies through its own logger.
 
 Its main privacy-sensitive boundaries are the content supplied by callers, arbitrary readable and writable filesystem paths, optional file and directory targets, metadata extraction, browser-facing active content such as raw SVG preview output, optional parser settings, and any additional parser implementations installed into the discovery graph.
+
+### Settings integration (November 2026)
+
+Parser-administration requests require feature and native administrator authorization. Configuration mutations additionally require a session-bound CSRF token; parser payloads and existing storage remain unchanged.

@@ -377,6 +377,7 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 	} = modularGridModule;
 
 	const ENDPOINT_URL = <?php echo json_encode($service, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
+	const CSRF_TOKEN = <?php echo json_encode((string)$this->_['csrfToken'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
 	const GRID_SELECTOR = '#parseflow-parser-grid';
 	const LOG_SELECTOR = '#parseflow-parser-output';
 	const BATCH_SIZE = 40;
@@ -477,7 +478,7 @@ $t = static fn(string $key, string $fallback): string => trim((string)($translat
 		const response = await fetch(ENDPOINT_URL, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(payload)
+			body: JSON.stringify((payload.mode === 'save' || payload.mode === 'reset') ? { ...payload, csrf: CSRF_TOKEN } : payload)
 		});
 
 		if (!response.ok) {

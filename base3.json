@@ -15,6 +15,7 @@
 	"repository": "https://github.com/ddbase3/ParseFlow",
 	"dependencies": {
 		"Base3Framework": ">=4.10.0",
-		"ClientStack": ">=4.23.0"
+		"ClientStack": ">=4.23.0",
+		"UiFoundation": ">=4.3.0"
 	}
 }
