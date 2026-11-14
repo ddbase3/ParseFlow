@@ -1,19 +1,34 @@
 <?php declare(strict_types=1);
 
-namespace ParseFlow\Test\Service;
+/***********************************************************************
+ * This file is part of ParseFlow for BASE3 Framework.
+ *
+ * ParseFlow supplies graph-based parser services.
+ * It discovers parser capabilities and plans conversion routes.
+ * The parser workflow runs through existing module contracts.
+ *
+ * Developed by Daniel Dahme
+ * Licensed under GPL-3.0
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
+ *
+ * https://base3.de
+ ***********************************************************************/
 
-use ParseFlow\Api\IParserSource;
-use ParseFlow\Exception\ParserExecutionException;
-use ParseFlow\Input\AutoDetectParserInput;
-use ParseFlow\Input\DocumentParserInput;
-use ParseFlow\Input\PlainTextParserInput;
-use ParseFlow\Input\StructuredParserInput;
-use ParseFlow\Service\ParserSourceResolver;
-use ParseFlow\Source\BinaryParserSource;
-use ParseFlow\Source\FileParserSource;
-use ParseFlow\Source\StreamParserSource;
-use ParseFlow\Source\StringParserSource;
-use ParseFlow\Source\StructuredParserSource;
+
+namespace Base3\ParseFlow\Test\Service;
+
+use Base3\ParseFlow\Api\IParserSource;
+use Base3\ParseFlow\Exception\ParserExecutionException;
+use Base3\ParseFlow\Input\AutoDetectParserInput;
+use Base3\ParseFlow\Input\DocumentParserInput;
+use Base3\ParseFlow\Input\PlainTextParserInput;
+use Base3\ParseFlow\Input\StructuredParserInput;
+use Base3\ParseFlow\Service\ParserSourceResolver;
+use Base3\ParseFlow\Source\BinaryParserSource;
+use Base3\ParseFlow\Source\FileParserSource;
+use Base3\ParseFlow\Source\StreamParserSource;
+use Base3\ParseFlow\Source\StringParserSource;
+use Base3\ParseFlow\Source\StructuredParserSource;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -70,7 +85,7 @@ final class ParserSourceResolverTest extends TestCase {
 
 	#[DataProvider('autodetectedStringTypes')]
 	public function testStringInputAutodetection(string $format, string $type): void {
-		$input = $this->createMock(\ParseFlow\Api\IParserInput::class);
+		$input = $this->createMock(\Base3\ParseFlow\Api\IParserInput::class);
 		$input->method('getType')->willReturn('auto');
 		$input->method('getFormat')->willReturn($format);
 		$input->method('getOptions')->willReturn([]);

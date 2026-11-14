@@ -1,16 +1,31 @@
 <?php declare(strict_types=1);
 
-namespace ParseFlow\Test\Service;
+/***********************************************************************
+ * This file is part of ParseFlow for BASE3 Framework.
+ *
+ * ParseFlow supplies graph-based parser services.
+ * It discovers parser capabilities and plans conversion routes.
+ * The parser workflow runs through existing module contracts.
+ *
+ * Developed by Daniel Dahme
+ * Licensed under GPL-3.0
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
+ *
+ * https://base3.de
+ ***********************************************************************/
 
-use ParseFlow\Api\IParserTarget;
-use ParseFlow\Dto\ParserPayload;
-use ParseFlow\Dto\ParserState;
-use ParseFlow\Exception\ParserTargetException;
-use ParseFlow\Service\ParserTargetWriter;
-use ParseFlow\Target\DirectoryParserTarget;
-use ParseFlow\Target\FileParserTarget;
-use ParseFlow\Target\ReturnParserTarget;
-use ParseFlow\Target\StreamParserTarget;
+
+namespace Base3\ParseFlow\Test\Service;
+
+use Base3\ParseFlow\Api\IParserTarget;
+use Base3\ParseFlow\Dto\ParserPayload;
+use Base3\ParseFlow\Dto\ParserState;
+use Base3\ParseFlow\Exception\ParserTargetException;
+use Base3\ParseFlow\Service\ParserTargetWriter;
+use Base3\ParseFlow\Target\DirectoryParserTarget;
+use Base3\ParseFlow\Target\FileParserTarget;
+use Base3\ParseFlow\Target\ReturnParserTarget;
+use Base3\ParseFlow\Target\StreamParserTarget;
 use PHPUnit\Framework\TestCase;
 
 final class ParserTargetWriterTest extends TestCase {

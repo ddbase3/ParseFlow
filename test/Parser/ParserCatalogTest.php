@@ -1,21 +1,36 @@
 <?php declare(strict_types=1);
 
-namespace ParseFlow\Test\Parser;
+/***********************************************************************
+ * This file is part of ParseFlow for BASE3 Framework.
+ *
+ * ParseFlow supplies graph-based parser services.
+ * It discovers parser capabilities and plans conversion routes.
+ * The parser workflow runs through existing module contracts.
+ *
+ * Developed by Daniel Dahme
+ * Licensed under GPL-3.0
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
+ *
+ * https://base3.de
+ ***********************************************************************/
 
-use ParseFlow\Dto\ParserPayload;
-use ParseFlow\Dto\ParserPlanStep;
-use ParseFlow\Dto\ParserPlanningContext;
-use ParseFlow\Dto\ParserRequest;
-use ParseFlow\Dto\ParserRouteEvaluation;
-use ParseFlow\Dto\ParserStrategy;
-use ParseFlow\Dto\ParserStepRequest;
-use ParseFlow\Exception\ParserExecutionException;
-use ParseFlow\Input\AutoDetectParserInput;
-use ParseFlow\Output\StringParserOutput;
-use ParseFlow\Parser\AbstractSingleRouteParser;
-use ParseFlow\Source\StringParserSource;
-use ParseFlow\Target\ReturnParserTarget;
-use ParseFlow\Test\Fixture\ParserSampleFixture;
+
+namespace Base3\ParseFlow\Test\Parser;
+
+use Base3\ParseFlow\Dto\ParserPayload;
+use Base3\ParseFlow\Dto\ParserPlanStep;
+use Base3\ParseFlow\Dto\ParserPlanningContext;
+use Base3\ParseFlow\Dto\ParserRequest;
+use Base3\ParseFlow\Dto\ParserRouteEvaluation;
+use Base3\ParseFlow\Dto\ParserStrategy;
+use Base3\ParseFlow\Dto\ParserStepRequest;
+use Base3\ParseFlow\Exception\ParserExecutionException;
+use Base3\ParseFlow\Input\AutoDetectParserInput;
+use Base3\ParseFlow\Output\StringParserOutput;
+use Base3\ParseFlow\Parser\AbstractSingleRouteParser;
+use Base3\ParseFlow\Source\StringParserSource;
+use Base3\ParseFlow\Target\ReturnParserTarget;
+use Base3\ParseFlow\Test\Fixture\ParserSampleFixture;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -25,7 +40,7 @@ final class ParserCatalogTest extends TestCase {
 		$root = dirname(__DIR__, 2) . '/src/Parser';
 		foreach (glob($root . '/*/*.php') ?: [] as $path) {
 			$namespace = basename(dirname($path));
-			$class = 'ParseFlow\\Parser\\' . $namespace . '\\' . basename($path, '.php');
+			$class = 'Base3\ParseFlow\\Parser\\' . $namespace . '\\' . basename($path, '.php');
 			if (is_subclass_of($class, AbstractSingleRouteParser::class)) {
 				yield $namespace . '/' . basename($path, '.php') => [$class];
 			}

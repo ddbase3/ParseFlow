@@ -14,11 +14,11 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Service;
+namespace Base3\ParseFlow\Service;
 
-use Base3\Api\IClassMap;
-use ParseFlow\Api\IParser;
-use ParseFlow\Dto\ParserRoute;
+use Base3\CoreFoundation\Api\IClassMap;
+use Base3\ParseFlow\Api\IParser;
+use Base3\ParseFlow\Dto\ParserRoute;
 
 /**
  * Loads parser instances and their routes through BASE3 ClassMap discovery.

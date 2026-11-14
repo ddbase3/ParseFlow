@@ -14,9 +14,9 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Service;
+namespace Base3\ParseFlow\Service;
 
-use ParseFlow\Dto\ParserState;
+use Base3\ParseFlow\Dto\ParserState;
 
 /**
  * Matches parser states conservatively and deterministically.

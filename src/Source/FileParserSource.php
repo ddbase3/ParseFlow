@@ -14,9 +14,9 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Source;
+namespace Base3\ParseFlow\Source;
 
-use ParseFlow\Api\IParserSource;
+use Base3\ParseFlow\Api\IParserSource;
 
 class FileParserSource implements IParserSource {
 

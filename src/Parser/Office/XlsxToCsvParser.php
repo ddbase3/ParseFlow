@@ -14,12 +14,12 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Parser\Office;
+namespace Base3\ParseFlow\Parser\Office;
 
-use ParseFlow\Dto\ParserRouteQuality;
-use ParseFlow\Dto\ParserStepRequest;
-use ParseFlow\Parser\AbstractSingleRouteParser;
-use ParseFlow\Parser\Office\OfficeOpenXmlParserHelper;
+use Base3\ParseFlow\Dto\ParserRouteQuality;
+use Base3\ParseFlow\Dto\ParserStepRequest;
+use Base3\ParseFlow\Parser\AbstractSingleRouteParser;
+use Base3\ParseFlow\Parser\Office\OfficeOpenXmlParserHelper;
 
 class XlsxToCsvParser extends AbstractSingleRouteParser {
 
@@ -45,6 +45,6 @@ class XlsxToCsvParser extends AbstractSingleRouteParser {
 	}
 
 	protected function transform(mixed $value, ParserStepRequest $request): mixed {
-		return \ParseFlow\Parser\Office\OfficeOpenXmlParserHelper::xlsxToCsv($value);
+		return \Base3\ParseFlow\Parser\Office\OfficeOpenXmlParserHelper::xlsxToCsv($value);
 	}
 }

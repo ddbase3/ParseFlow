@@ -1,18 +1,33 @@
 <?php declare(strict_types=1);
 
-namespace ParseFlow\Test\Parser;
+/***********************************************************************
+ * This file is part of ParseFlow for BASE3 Framework.
+ *
+ * ParseFlow supplies graph-based parser services.
+ * It discovers parser capabilities and plans conversion routes.
+ * The parser workflow runs through existing module contracts.
+ *
+ * Developed by Daniel Dahme
+ * Licensed under GPL-3.0
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
+ *
+ * https://base3.de
+ ***********************************************************************/
 
-use ParseFlow\Parser\Common\ParserValueHelper;
-use ParseFlow\Parser\Csv\CsvParserHelper;
-use ParseFlow\Parser\Html\HtmlParserHelper;
-use ParseFlow\Parser\Image\ImageParserHelper;
-use ParseFlow\Parser\IniEnv\IniEnvParserHelper;
-use ParseFlow\Parser\Json\JsonParserHelper;
-use ParseFlow\Parser\Markdown\MarkdownParserHelper;
-use ParseFlow\Parser\Office\OfficeOpenXmlParserHelper;
-use ParseFlow\Parser\Xml\XmlParserHelper;
-use ParseFlow\Test\Fixture\ParserSampleFixture;
-use ParseFlow\Dto\ParserState;
+
+namespace Base3\ParseFlow\Test\Parser;
+
+use Base3\ParseFlow\Parser\Common\ParserValueHelper;
+use Base3\ParseFlow\Parser\Csv\CsvParserHelper;
+use Base3\ParseFlow\Parser\Html\HtmlParserHelper;
+use Base3\ParseFlow\Parser\Image\ImageParserHelper;
+use Base3\ParseFlow\Parser\IniEnv\IniEnvParserHelper;
+use Base3\ParseFlow\Parser\Json\JsonParserHelper;
+use Base3\ParseFlow\Parser\Markdown\MarkdownParserHelper;
+use Base3\ParseFlow\Parser\Office\OfficeOpenXmlParserHelper;
+use Base3\ParseFlow\Parser\Xml\XmlParserHelper;
+use Base3\ParseFlow\Test\Fixture\ParserSampleFixture;
+use Base3\ParseFlow\Dto\ParserState;
 use PHPUnit\Framework\TestCase;
 
 final class ParserHelpersTest extends TestCase {

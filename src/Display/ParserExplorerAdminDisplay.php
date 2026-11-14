@@ -14,23 +14,23 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Display;
+namespace Base3\ParseFlow\Display;
 
-use Base3\Api\IAssetResolver;
-use Base3\Api\IDisplay;
-use Base3\Authorization\Api\IAuthorizationService;
-use UiFoundation\Settings\SettingsAdministrationAccess;
-use Base3\Api\IMvcView;
-use Base3\Api\IRequest;
-use Base3\LinkTarget\Api\ILinkTargetService;
-use ParseFlow\Api\IParserService;
-use ParseFlow\Dto\ParserCapabilityReport;
-use ParseFlow\Dto\ParserRoute;
-use ParseFlow\Dto\ParserRouteEvaluation;
-use ParseFlow\Dto\ParserState;
-use ParseFlow\Dto\ParserStrategy;
-use ParseFlow\Service\ParserScoreCalculator;
-use ParseFlow\Service\ParserStateMatcher;
+use Base3\CoreFoundation\Api\IAssetResolver;
+use Base3\CoreFoundation\Api\IDisplay;
+use Base3\CoreFoundation\Authorization\Api\IAuthorizationService;
+use Base3\UiFoundation\Settings\SettingsAdministrationAccess;
+use Base3\CoreFoundation\Api\IMvcView;
+use Base3\CoreFoundation\Api\IRequest;
+use Base3\CoreFoundation\LinkTarget\Api\ILinkTargetService;
+use Base3\ParseFlow\Api\IParserService;
+use Base3\ParseFlow\Dto\ParserCapabilityReport;
+use Base3\ParseFlow\Dto\ParserRoute;
+use Base3\ParseFlow\Dto\ParserRouteEvaluation;
+use Base3\ParseFlow\Dto\ParserState;
+use Base3\ParseFlow\Dto\ParserStrategy;
+use Base3\ParseFlow\Service\ParserScoreCalculator;
+use Base3\ParseFlow\Service\ParserStateMatcher;
 use Throwable;
 
 /**
@@ -86,7 +86,7 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 
 	public function getOutput(string $out = 'html', bool $final = false): string {
 		if (!SettingsAdministrationAccess::isAllowed(
-			$this->settingsAuthorization, \ParseFlow\SettingsTab\ParserexploreradminSettingsTab::getName()
+			$this->settingsAuthorization, \Base3\ParseFlow\SettingsTab\ParserexploreradminSettingsTab::getName()
 		)) {
 			http_response_code(403);
 			return '';
@@ -1211,13 +1211,13 @@ final class ParserExplorerAdminDisplay implements IDisplay {
 		}
 
 		$imports = [
-			'use ParseFlow\\Api\\IParserService;',
-			'use ParseFlow\\Dto\\ParserRequest;',
-			'use ParseFlow\\Dto\\ParserStrategy;',
-			'use ParseFlow\\Input\\' . $this->inputClass($inputState['type']) . ';',
-			'use ParseFlow\\Output\\' . $this->outputClass($outputState['type']) . ';',
-			'use ParseFlow\\Source\\' . $this->sourceClass($sourceType) . ';',
-			'use ParseFlow\\Target\\' . $this->targetClass($targetType) . ';',
+			'use Base3\ParseFlow\\Api\\IParserService;',
+			'use Base3\ParseFlow\\Dto\\ParserRequest;',
+			'use Base3\ParseFlow\\Dto\\ParserStrategy;',
+			'use Base3\ParseFlow\\Input\\' . $this->inputClass($inputState['type']) . ';',
+			'use Base3\ParseFlow\\Output\\' . $this->outputClass($outputState['type']) . ';',
+			'use Base3\ParseFlow\\Source\\' . $this->sourceClass($sourceType) . ';',
+			'use Base3\ParseFlow\\Target\\' . $this->targetClass($targetType) . ';',
 		];
 
 		$imports = array_values(array_unique($imports));

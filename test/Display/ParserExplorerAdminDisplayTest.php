@@ -1,13 +1,28 @@
 <?php declare(strict_types=1);
 
-namespace ParseFlow\Test\Display;
+/***********************************************************************
+ * This file is part of ParseFlow for BASE3 Framework.
+ *
+ * ParseFlow supplies graph-based parser services.
+ * It discovers parser capabilities and plans conversion routes.
+ * The parser workflow runs through existing module contracts.
+ *
+ * Developed by Daniel Dahme
+ * Licensed under GPL-3.0
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
+ *
+ * https://base3.de
+ ***********************************************************************/
 
-use ParseFlow\Display\ParserExplorerAdminDisplay;
-use ParseFlow\Parser\Markdown\MarkdownToTextParser;
-use ParseFlow\Service\DefaultParserService;
-use ParseFlow\Service\ParserScoreCalculator;
-use ParseFlow\Service\ParserStateMatcher;
-use ParseFlow\Test\Fixture\ParserClassMapFixture;
+
+namespace Base3\ParseFlow\Test\Display;
+
+use Base3\ParseFlow\Display\ParserExplorerAdminDisplay;
+use Base3\ParseFlow\Parser\Markdown\MarkdownToTextParser;
+use Base3\ParseFlow\Service\DefaultParserService;
+use Base3\ParseFlow\Service\ParserScoreCalculator;
+use Base3\ParseFlow\Service\ParserStateMatcher;
+use Base3\ParseFlow\Test\Fixture\ParserClassMapFixture;
 use PHPUnit\Framework\TestCase;
 
 final class ParserExplorerAdminDisplayTest extends TestCase {

@@ -14,14 +14,14 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Api;
+namespace Base3\ParseFlow\Api;
 
-use Base3\Api\IBase;
-use ParseFlow\Dto\ParserPlanningContext;
-use ParseFlow\Dto\ParserRoute;
-use ParseFlow\Dto\ParserRouteEvaluation;
-use ParseFlow\Dto\ParserStepRequest;
-use ParseFlow\Dto\ParserStepResult;
+use Base3\CoreFoundation\Api\IBase;
+use Base3\ParseFlow\Dto\ParserPlanningContext;
+use Base3\ParseFlow\Dto\ParserRoute;
+use Base3\ParseFlow\Dto\ParserRouteEvaluation;
+use Base3\ParseFlow\Dto\ParserStepRequest;
+use Base3\ParseFlow\Dto\ParserStepResult;
 
 /**
  * Parser implementations provide one or more directed transformation routes.

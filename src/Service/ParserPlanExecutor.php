@@ -14,13 +14,13 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Service;
+namespace Base3\ParseFlow\Service;
 
-use ParseFlow\Dto\ParserPayload;
-use ParseFlow\Dto\ParserPlan;
-use ParseFlow\Dto\ParserRequest;
-use ParseFlow\Dto\ParserStepRequest;
-use ParseFlow\Exception\ParserExecutionException;
+use Base3\ParseFlow\Dto\ParserPayload;
+use Base3\ParseFlow\Dto\ParserPlan;
+use Base3\ParseFlow\Dto\ParserRequest;
+use Base3\ParseFlow\Dto\ParserStepRequest;
+use Base3\ParseFlow\Exception\ParserExecutionException;
 
 /**
  * Executes planned parser steps and returns the final payload.

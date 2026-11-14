@@ -14,17 +14,17 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Service;
+namespace Base3\ParseFlow\Service;
 
-use ParseFlow\Dto\ParserPayload;
-use ParseFlow\Dto\ParserPlan;
-use ParseFlow\Dto\ParserPlanningContext;
-use ParseFlow\Dto\ParserPlanStep;
-use ParseFlow\Dto\ParserRequest;
-use ParseFlow\Dto\ParserRoute;
-use ParseFlow\Dto\ParserState;
-use ParseFlow\Dto\ParserStrategy;
-use ParseFlow\Exception\UnsupportedParserRequestException;
+use Base3\ParseFlow\Dto\ParserPayload;
+use Base3\ParseFlow\Dto\ParserPlan;
+use Base3\ParseFlow\Dto\ParserPlanningContext;
+use Base3\ParseFlow\Dto\ParserPlanStep;
+use Base3\ParseFlow\Dto\ParserRequest;
+use Base3\ParseFlow\Dto\ParserRoute;
+use Base3\ParseFlow\Dto\ParserState;
+use Base3\ParseFlow\Dto\ParserStrategy;
+use Base3\ParseFlow\Exception\UnsupportedParserRequestException;
 use SplPriorityQueue;
 
 /**

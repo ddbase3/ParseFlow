@@ -14,7 +14,7 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Dto;
+namespace Base3\ParseFlow\Dto;
 
 /**
  * Result of resolving and inspecting one source.

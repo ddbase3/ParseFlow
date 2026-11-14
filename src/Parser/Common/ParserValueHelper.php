@@ -14,7 +14,7 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Parser\Common;
+namespace Base3\ParseFlow\Parser\Common;
 
 /**
  * Shared value conversion helpers for local parser implementations.

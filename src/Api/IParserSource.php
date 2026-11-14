@@ -14,7 +14,7 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Api;
+namespace Base3\ParseFlow\Api;
 
 /**
  * Describes where original parser data comes from.

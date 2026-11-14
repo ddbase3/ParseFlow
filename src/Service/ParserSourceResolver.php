@@ -14,19 +14,19 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Service;
+namespace Base3\ParseFlow\Service;
 
-use ParseFlow\Api\IParserInput;
-use ParseFlow\Api\IParserSource;
-use ParseFlow\Dto\ParserPayload;
-use ParseFlow\Dto\ParserSourceInspection;
-use ParseFlow\Dto\ParserState;
-use ParseFlow\Exception\ParserExecutionException;
-use ParseFlow\Source\BinaryParserSource;
-use ParseFlow\Source\FileParserSource;
-use ParseFlow\Source\StreamParserSource;
-use ParseFlow\Source\StringParserSource;
-use ParseFlow\Source\StructuredParserSource;
+use Base3\ParseFlow\Api\IParserInput;
+use Base3\ParseFlow\Api\IParserSource;
+use Base3\ParseFlow\Dto\ParserPayload;
+use Base3\ParseFlow\Dto\ParserSourceInspection;
+use Base3\ParseFlow\Dto\ParserState;
+use Base3\ParseFlow\Exception\ParserExecutionException;
+use Base3\ParseFlow\Source\BinaryParserSource;
+use Base3\ParseFlow\Source\FileParserSource;
+use Base3\ParseFlow\Source\StreamParserSource;
+use Base3\ParseFlow\Source\StringParserSource;
+use Base3\ParseFlow\Source\StructuredParserSource;
 
 /**
  * Resolves transport sources into initial parser payloads.

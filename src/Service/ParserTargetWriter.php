@@ -14,15 +14,15 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Service;
+namespace Base3\ParseFlow\Service;
 
-use ParseFlow\Api\IParserTarget;
-use ParseFlow\Dto\ParserPayload;
-use ParseFlow\Exception\ParserTargetException;
-use ParseFlow\Target\DirectoryParserTarget;
-use ParseFlow\Target\FileParserTarget;
-use ParseFlow\Target\ReturnParserTarget;
-use ParseFlow\Target\StreamParserTarget;
+use Base3\ParseFlow\Api\IParserTarget;
+use Base3\ParseFlow\Dto\ParserPayload;
+use Base3\ParseFlow\Exception\ParserTargetException;
+use Base3\ParseFlow\Target\DirectoryParserTarget;
+use Base3\ParseFlow\Target\FileParserTarget;
+use Base3\ParseFlow\Target\ReturnParserTarget;
+use Base3\ParseFlow\Target\StreamParserTarget;
 
 /**
  * Writes final payloads to return values, files, directories or streams.

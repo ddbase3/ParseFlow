@@ -14,12 +14,12 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Parser\Image;
+namespace Base3\ParseFlow\Parser\Image;
 
-use ParseFlow\Dto\ParserRouteQuality;
-use ParseFlow\Dto\ParserStepRequest;
-use ParseFlow\Parser\AbstractSingleRouteParser;
-use ParseFlow\Parser\Image\ImageParserHelper;
+use Base3\ParseFlow\Dto\ParserRouteQuality;
+use Base3\ParseFlow\Dto\ParserStepRequest;
+use Base3\ParseFlow\Parser\AbstractSingleRouteParser;
+use Base3\ParseFlow\Parser\Image\ImageParserHelper;
 
 class PngToWebpParser extends AbstractSingleRouteParser {
 
@@ -45,6 +45,6 @@ class PngToWebpParser extends AbstractSingleRouteParser {
 	}
 
 	protected function transform(mixed $value, ParserStepRequest $request): mixed {
-		return \ParseFlow\Parser\Image\ImageParserHelper::pngToWebp($value);
+		return \Base3\ParseFlow\Parser\Image\ImageParserHelper::pngToWebp($value);
 	}
 }

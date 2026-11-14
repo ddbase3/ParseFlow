@@ -14,13 +14,13 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Service;
+namespace Base3\ParseFlow\Service;
 
-use ParseFlow\Dto\ParserCapabilityReport;
-use ParseFlow\Dto\ParserExploreRequest;
-use ParseFlow\Dto\ParserRoute;
-use ParseFlow\Dto\ParserState;
-use ParseFlow\Dto\ParserStrategy;
+use Base3\ParseFlow\Dto\ParserCapabilityReport;
+use Base3\ParseFlow\Dto\ParserExploreRequest;
+use Base3\ParseFlow\Dto\ParserRoute;
+use Base3\ParseFlow\Dto\ParserState;
+use Base3\ParseFlow\Dto\ParserStrategy;
 
 /**
  * Builds a discoverable capability report from the active parser graph.

@@ -21,13 +21,13 @@ The source describes where the original data comes from. The input describes how
 The primary service contract is:
 
 ```text
-ParseFlow\Api\IParserService
+Base3\ParseFlow\Api\IParserService
 ```
 
 The default implementation is:
 
 ```text
-ParseFlow\Service\DefaultParserService
+Base3\ParseFlow\Service\DefaultParserService
 ```
 
 It exposes these main operations:
@@ -47,7 +47,7 @@ explore(?ParserExploreRequest $request = null): ParserCapabilityReport
 Parsers implement:
 
 ```text
-ParseFlow\Api\IParser
+Base3\ParseFlow\Api\IParser
 ```
 
 They are discovered through the BASE3 `IClassMap`. ParseFlow does not maintain a hard-coded central parser registry.
@@ -447,9 +447,9 @@ Stored configuration is returned in the detail response as both `config` and `ef
 The current source contains:
 
 ```text
-ParseFlow\Display\ParserAdminDisplay
-ParseFlow\Display\ParserExplorerAdminDisplay
-ParseFlow\Output\ParseFlowGraphOutput
+Base3\ParseFlow\Display\ParserAdminDisplay
+Base3\ParseFlow\Display\ParserExplorerAdminDisplay
+Base3\ParseFlow\Output\ParseFlowGraphOutput
 ```
 
 `ParserAdminDisplay` lists discovered parsers and can manage schema-based parser settings. `ParserExplorerAdminDisplay` explores possible conversion plans. `ParseFlowGraphOutput` renders discovered parser states and routes as HTML or JSON.

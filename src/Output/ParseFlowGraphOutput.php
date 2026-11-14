@@ -14,13 +14,13 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Output;
+namespace Base3\ParseFlow\Output;
 
-use Base3\Api\IAssetResolver;
-use Base3\Api\IOutput;
-use Base3\LinkTarget\Api\ILinkTargetService;
-use Base3\Translation\Api\ITranslation;
-use ParseFlow\Api\IParserService;
+use Base3\CoreFoundation\Api\IAssetResolver;
+use Base3\CoreFoundation\Api\IOutput;
+use Base3\CoreFoundation\LinkTarget\Api\ILinkTargetService;
+use Base3\CoreFoundation\Translation\Api\ITranslation;
+use Base3\ParseFlow\Api\IParserService;
 
 /**
  * Displays the discovered ParseFlow parser graph as HTML or JSON.

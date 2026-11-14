@@ -14,9 +14,9 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Parser\Image;
+namespace Base3\ParseFlow\Parser\Image;
 
-use ParseFlow\Parser\Common\ParserValueHelper;
+use Base3\ParseFlow\Parser\Common\ParserValueHelper;
 
 class ImageParserHelper {
 

@@ -1,23 +1,38 @@
 <?php declare(strict_types=1);
 
-namespace ParseFlow\Test\Dto;
+/***********************************************************************
+ * This file is part of ParseFlow for BASE3 Framework.
+ *
+ * ParseFlow supplies graph-based parser services.
+ * It discovers parser capabilities and plans conversion routes.
+ * The parser workflow runs through existing module contracts.
+ *
+ * Developed by Daniel Dahme
+ * Licensed under GPL-3.0
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
+ *
+ * https://base3.de
+ ***********************************************************************/
 
-use ParseFlow\Dto\ParserCapabilityReport;
-use ParseFlow\Dto\ParserExploreRequest;
-use ParseFlow\Dto\ParserPayload;
-use ParseFlow\Dto\ParserPlan;
-use ParseFlow\Dto\ParserPlanStep;
-use ParseFlow\Dto\ParserRequest;
-use ParseFlow\Dto\ParserResult;
-use ParseFlow\Dto\ParserRoute;
-use ParseFlow\Dto\ParserRouteEvaluation;
-use ParseFlow\Dto\ParserRouteQuality;
-use ParseFlow\Dto\ParserState;
-use ParseFlow\Dto\ParserStrategy;
-use ParseFlow\Input\PlainTextParserInput;
-use ParseFlow\Output\StringParserOutput;
-use ParseFlow\Source\StringParserSource;
-use ParseFlow\Target\ReturnParserTarget;
+
+namespace Base3\ParseFlow\Test\Dto;
+
+use Base3\ParseFlow\Dto\ParserCapabilityReport;
+use Base3\ParseFlow\Dto\ParserExploreRequest;
+use Base3\ParseFlow\Dto\ParserPayload;
+use Base3\ParseFlow\Dto\ParserPlan;
+use Base3\ParseFlow\Dto\ParserPlanStep;
+use Base3\ParseFlow\Dto\ParserRequest;
+use Base3\ParseFlow\Dto\ParserResult;
+use Base3\ParseFlow\Dto\ParserRoute;
+use Base3\ParseFlow\Dto\ParserRouteEvaluation;
+use Base3\ParseFlow\Dto\ParserRouteQuality;
+use Base3\ParseFlow\Dto\ParserState;
+use Base3\ParseFlow\Dto\ParserStrategy;
+use Base3\ParseFlow\Input\PlainTextParserInput;
+use Base3\ParseFlow\Output\StringParserOutput;
+use Base3\ParseFlow\Source\StringParserSource;
+use Base3\ParseFlow\Target\ReturnParserTarget;
 use PHPUnit\Framework\TestCase;
 
 final class ParserDtoTest extends TestCase {

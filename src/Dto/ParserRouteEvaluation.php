@@ -14,7 +14,7 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Dto;
+namespace Base3\ParseFlow\Dto;
 
 /**
  * Describes whether and how well a route supports one planning context.

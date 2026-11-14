@@ -14,7 +14,7 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Dto;
+namespace Base3\ParseFlow\Dto;
 
 /**
  * Provides current request and payload context to route evaluation.

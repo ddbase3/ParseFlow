@@ -14,10 +14,10 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Parser\IniEnv;
+namespace Base3\ParseFlow\Parser\IniEnv;
 
 use DOMDocument;
-use ParseFlow\Parser\Common\ParserValueHelper;
+use Base3\ParseFlow\Parser\Common\ParserValueHelper;
 
 class IniEnvParserHelper {
 

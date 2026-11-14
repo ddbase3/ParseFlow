@@ -1,28 +1,43 @@
 <?php declare(strict_types=1);
 
-namespace ParseFlow\Test\Model;
+/***********************************************************************
+ * This file is part of ParseFlow for BASE3 Framework.
+ *
+ * ParseFlow supplies graph-based parser services.
+ * It discovers parser capabilities and plans conversion routes.
+ * The parser workflow runs through existing module contracts.
+ *
+ * Developed by Daniel Dahme
+ * Licensed under GPL-3.0
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
+ *
+ * https://base3.de
+ ***********************************************************************/
 
-use ParseFlow\Input\AutoDetectParserInput;
-use ParseFlow\Input\DocumentParserInput;
-use ParseFlow\Input\ImageParserInput;
-use ParseFlow\Input\PlainTextParserInput;
-use ParseFlow\Input\StructuredParserInput;
-use ParseFlow\Output\BinaryParserOutput;
-use ParseFlow\Output\ChunksParserOutput;
-use ParseFlow\Output\FilesParserOutput;
-use ParseFlow\Output\ImageParserOutput;
-use ParseFlow\Output\StreamParserOutput;
-use ParseFlow\Output\StringParserOutput;
-use ParseFlow\Output\StructuredParserOutput;
-use ParseFlow\Source\BinaryParserSource;
-use ParseFlow\Source\FileParserSource;
-use ParseFlow\Source\StreamParserSource;
-use ParseFlow\Source\StringParserSource;
-use ParseFlow\Source\StructuredParserSource;
-use ParseFlow\Target\DirectoryParserTarget;
-use ParseFlow\Target\FileParserTarget;
-use ParseFlow\Target\ReturnParserTarget;
-use ParseFlow\Target\StreamParserTarget;
+
+namespace Base3\ParseFlow\Test\Model;
+
+use Base3\ParseFlow\Input\AutoDetectParserInput;
+use Base3\ParseFlow\Input\DocumentParserInput;
+use Base3\ParseFlow\Input\ImageParserInput;
+use Base3\ParseFlow\Input\PlainTextParserInput;
+use Base3\ParseFlow\Input\StructuredParserInput;
+use Base3\ParseFlow\Output\BinaryParserOutput;
+use Base3\ParseFlow\Output\ChunksParserOutput;
+use Base3\ParseFlow\Output\FilesParserOutput;
+use Base3\ParseFlow\Output\ImageParserOutput;
+use Base3\ParseFlow\Output\StreamParserOutput;
+use Base3\ParseFlow\Output\StringParserOutput;
+use Base3\ParseFlow\Output\StructuredParserOutput;
+use Base3\ParseFlow\Source\BinaryParserSource;
+use Base3\ParseFlow\Source\FileParserSource;
+use Base3\ParseFlow\Source\StreamParserSource;
+use Base3\ParseFlow\Source\StringParserSource;
+use Base3\ParseFlow\Source\StructuredParserSource;
+use Base3\ParseFlow\Target\DirectoryParserTarget;
+use Base3\ParseFlow\Target\FileParserTarget;
+use Base3\ParseFlow\Target\ReturnParserTarget;
+use Base3\ParseFlow\Target\StreamParserTarget;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

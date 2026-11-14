@@ -14,12 +14,12 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Parser\Xml;
+namespace Base3\ParseFlow\Parser\Xml;
 
 use DOMDocument;
 use DOMElement;
 use SimpleXMLElement;
-use ParseFlow\Parser\Common\ParserValueHelper;
+use Base3\ParseFlow\Parser\Common\ParserValueHelper;
 
 class XmlParserHelper {
 

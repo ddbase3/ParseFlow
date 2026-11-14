@@ -14,17 +14,17 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Service;
+namespace Base3\ParseFlow\Service;
 
-use Base3\Api\IClassMap;
-use ParseFlow\Api\IParserService;
-use ParseFlow\Dto\ParserCapabilityReport;
-use ParseFlow\Dto\ParserExploreRequest;
-use ParseFlow\Dto\ParserPlan;
-use ParseFlow\Dto\ParserRequest;
-use ParseFlow\Dto\ParserResult;
-use ParseFlow\Dto\ParserStrategy;
-use ParseFlow\Exception\UnsupportedParserRequestException;
+use Base3\CoreFoundation\Api\IClassMap;
+use Base3\ParseFlow\Api\IParserService;
+use Base3\ParseFlow\Dto\ParserCapabilityReport;
+use Base3\ParseFlow\Dto\ParserExploreRequest;
+use Base3\ParseFlow\Dto\ParserPlan;
+use Base3\ParseFlow\Dto\ParserRequest;
+use Base3\ParseFlow\Dto\ParserResult;
+use Base3\ParseFlow\Dto\ParserStrategy;
+use Base3\ParseFlow\Exception\UnsupportedParserRequestException;
 
 /**
  * Default parser service implementation.

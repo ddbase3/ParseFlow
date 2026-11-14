@@ -14,10 +14,10 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Parser\Core;
+namespace Base3\ParseFlow\Parser\Core;
 
-use ParseFlow\Dto\ParserStepRequest;
-use ParseFlow\Parser\AbstractSingleRouteParser;
+use Base3\ParseFlow\Dto\ParserStepRequest;
+use Base3\ParseFlow\Parser\AbstractSingleRouteParser;
 
 class PlainTextParser extends AbstractSingleRouteParser {
 

@@ -14,13 +14,13 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow;
+namespace Base3\ParseFlow;
 
-use Base3\Api\IClassMap;
-use Base3\Api\IContainer;
-use Base3\Api\IPlugin;
-use ParseFlow\Api\IParserService;
-use ParseFlow\Service\DefaultParserService;
+use Base3\CoreFoundation\Api\IClassMap;
+use Base3\CoreFoundation\Api\IContainer;
+use Base3\CoreFoundation\Api\IPlugin;
+use Base3\ParseFlow\Api\IParserService;
+use Base3\ParseFlow\Service\DefaultParserService;
 
 class ParseFlowPlugin implements IPlugin {
 

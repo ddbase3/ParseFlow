@@ -14,18 +14,18 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Parser;
+namespace Base3\ParseFlow\Parser;
 
-use ParseFlow\Api\IParser;
-use ParseFlow\Dto\ParserPayload;
-use ParseFlow\Dto\ParserPlanningContext;
-use ParseFlow\Dto\ParserRoute;
-use ParseFlow\Dto\ParserRouteEvaluation;
-use ParseFlow\Dto\ParserRouteQuality;
-use ParseFlow\Dto\ParserState;
-use ParseFlow\Dto\ParserStepRequest;
-use ParseFlow\Dto\ParserStepResult;
-use ParseFlow\Exception\ParserExecutionException;
+use Base3\ParseFlow\Api\IParser;
+use Base3\ParseFlow\Dto\ParserPayload;
+use Base3\ParseFlow\Dto\ParserPlanningContext;
+use Base3\ParseFlow\Dto\ParserRoute;
+use Base3\ParseFlow\Dto\ParserRouteEvaluation;
+use Base3\ParseFlow\Dto\ParserRouteQuality;
+use Base3\ParseFlow\Dto\ParserState;
+use Base3\ParseFlow\Dto\ParserStepRequest;
+use Base3\ParseFlow\Dto\ParserStepResult;
+use Base3\ParseFlow\Exception\ParserExecutionException;
 
 /**
  * Base class for simple local parsers that expose exactly one route.

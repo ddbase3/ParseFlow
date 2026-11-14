@@ -14,7 +14,7 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Exception;
+namespace Base3\ParseFlow\Exception;
 
 /**
  * Exception for parser planning failures.

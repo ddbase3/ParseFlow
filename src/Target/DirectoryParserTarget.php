@@ -14,9 +14,9 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Target;
+namespace Base3\ParseFlow\Target;
 
-use ParseFlow\Api\IParserTarget;
+use Base3\ParseFlow\Api\IParserTarget;
 
 class DirectoryParserTarget implements IParserTarget {
 

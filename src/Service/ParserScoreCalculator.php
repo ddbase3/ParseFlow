@@ -14,12 +14,12 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Service;
+namespace Base3\ParseFlow\Service;
 
-use ParseFlow\Dto\ParserRoute;
-use ParseFlow\Dto\ParserRouteEvaluation;
-use ParseFlow\Dto\ParserRouteQuality;
-use ParseFlow\Dto\ParserStrategy;
+use Base3\ParseFlow\Dto\ParserRoute;
+use Base3\ParseFlow\Dto\ParserRouteEvaluation;
+use Base3\ParseFlow\Dto\ParserRouteQuality;
+use Base3\ParseFlow\Dto\ParserStrategy;
 
 /**
  * Converts route quality into non-negative additive route costs.

@@ -14,9 +14,9 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Parser\Markdown;
+namespace Base3\ParseFlow\Parser\Markdown;
 
-use ParseFlow\Parser\Common\ParserValueHelper;
+use Base3\ParseFlow\Parser\Common\ParserValueHelper;
 
 class MarkdownParserHelper {
 

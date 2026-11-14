@@ -14,7 +14,7 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow;
+namespace Base3\ParseFlow;
 
 /**
  * Shared persistence convention for optional parser configuration.

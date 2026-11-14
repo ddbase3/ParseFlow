@@ -14,13 +14,13 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Parser\Html;
+namespace Base3\ParseFlow\Parser\Html;
 
 use DOMDocument;
 use DOMElement;
 use DOMNode;
 use DOMXPath;
-use ParseFlow\Parser\Common\ParserValueHelper;
+use Base3\ParseFlow\Parser\Common\ParserValueHelper;
 
 class HtmlParserHelper {
 

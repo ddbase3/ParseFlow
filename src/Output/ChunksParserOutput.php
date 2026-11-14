@@ -14,9 +14,9 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Output;
+namespace Base3\ParseFlow\Output;
 
-use ParseFlow\Api\IParserOutput;
+use Base3\ParseFlow\Api\IParserOutput;
 
 class ChunksParserOutput implements IParserOutput {
 

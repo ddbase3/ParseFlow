@@ -14,12 +14,12 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Dto;
+namespace Base3\ParseFlow\Dto;
 
-use ParseFlow\Api\IParserInput;
-use ParseFlow\Api\IParserOutput;
-use ParseFlow\Api\IParserSource;
-use ParseFlow\Api\IParserTarget;
+use Base3\ParseFlow\Api\IParserInput;
+use Base3\ParseFlow\Api\IParserOutput;
+use Base3\ParseFlow\Api\IParserSource;
+use Base3\ParseFlow\Api\IParserTarget;
 
 /**
  * Describes a complete parser request from source to target.

@@ -1,14 +1,29 @@
 <?php declare(strict_types=1);
 
-namespace ParseFlow\Test;
+/***********************************************************************
+ * This file is part of ParseFlow for BASE3 Framework.
+ *
+ * ParseFlow supplies graph-based parser services.
+ * It discovers parser capabilities and plans conversion routes.
+ * The parser workflow runs through existing module contracts.
+ *
+ * Developed by Daniel Dahme
+ * Licensed under GPL-3.0
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
+ *
+ * https://base3.de
+ ***********************************************************************/
 
-use Base3\Api\IClassMap;
-use Base3\Api\IContainer;
-use ParseFlow\Api\IParserService;
-use ParseFlow\ParseFlowPlugin;
-use ParseFlow\ParserSettings;
-use ParseFlow\Service\DefaultParserService;
-use ParseFlow\Test\Fixture\ParserClassMapFixture;
+
+namespace Base3\ParseFlow\Test;
+
+use Base3\CoreFoundation\Api\IClassMap;
+use Base3\CoreFoundation\Api\IContainer;
+use Base3\ParseFlow\Api\IParserService;
+use Base3\ParseFlow\ParseFlowPlugin;
+use Base3\ParseFlow\ParserSettings;
+use Base3\ParseFlow\Service\DefaultParserService;
+use Base3\ParseFlow\Test\Fixture\ParserClassMapFixture;
 use PHPUnit\Framework\TestCase;
 
 final class ParseFlowPluginTest extends TestCase {

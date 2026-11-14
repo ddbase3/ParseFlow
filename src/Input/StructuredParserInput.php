@@ -14,9 +14,9 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Input;
+namespace Base3\ParseFlow\Input;
 
-use ParseFlow\Api\IParserInput;
+use Base3\ParseFlow\Api\IParserInput;
 
 class StructuredParserInput implements IParserInput {
 

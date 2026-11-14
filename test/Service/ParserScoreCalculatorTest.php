@@ -1,13 +1,28 @@
 <?php declare(strict_types=1);
 
-namespace ParseFlow\Test\Service;
+/***********************************************************************
+ * This file is part of ParseFlow for BASE3 Framework.
+ *
+ * ParseFlow supplies graph-based parser services.
+ * It discovers parser capabilities and plans conversion routes.
+ * The parser workflow runs through existing module contracts.
+ *
+ * Developed by Daniel Dahme
+ * Licensed under GPL-3.0
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
+ *
+ * https://base3.de
+ ***********************************************************************/
 
-use ParseFlow\Dto\ParserRoute;
-use ParseFlow\Dto\ParserRouteEvaluation;
-use ParseFlow\Dto\ParserRouteQuality;
-use ParseFlow\Dto\ParserState;
-use ParseFlow\Dto\ParserStrategy;
-use ParseFlow\Service\ParserScoreCalculator;
+
+namespace Base3\ParseFlow\Test\Service;
+
+use Base3\ParseFlow\Dto\ParserRoute;
+use Base3\ParseFlow\Dto\ParserRouteEvaluation;
+use Base3\ParseFlow\Dto\ParserRouteQuality;
+use Base3\ParseFlow\Dto\ParserState;
+use Base3\ParseFlow\Dto\ParserStrategy;
+use Base3\ParseFlow\Service\ParserScoreCalculator;
 use PHPUnit\Framework\TestCase;
 
 final class ParserScoreCalculatorTest extends TestCase {

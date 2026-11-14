@@ -14,12 +14,12 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Parser\Html;
+namespace Base3\ParseFlow\Parser\Html;
 
-use ParseFlow\Dto\ParserRouteQuality;
-use ParseFlow\Dto\ParserStepRequest;
-use ParseFlow\Parser\AbstractSingleRouteParser;
-use ParseFlow\Parser\Html\HtmlParserHelper;
+use Base3\ParseFlow\Dto\ParserRouteQuality;
+use Base3\ParseFlow\Dto\ParserStepRequest;
+use Base3\ParseFlow\Parser\AbstractSingleRouteParser;
+use Base3\ParseFlow\Parser\Html\HtmlParserHelper;
 
 class HtmlLinksToJsonParser extends AbstractSingleRouteParser {
 
@@ -45,6 +45,6 @@ class HtmlLinksToJsonParser extends AbstractSingleRouteParser {
 	}
 
 	protected function transform(mixed $value, ParserStepRequest $request): mixed {
-		return \ParseFlow\Parser\Html\HtmlParserHelper::linksToJson($value);
+		return \Base3\ParseFlow\Parser\Html\HtmlParserHelper::linksToJson($value);
 	}
 }

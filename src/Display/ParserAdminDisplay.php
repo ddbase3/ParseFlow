@@ -14,21 +14,21 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Display;
+namespace Base3\ParseFlow\Display;
 
-use Base3\Api\IAssetResolver;
-use Base3\Api\IClassMap;
-use Base3\Api\IDisplay;
-use Base3\Authorization\Api\IAuthorizationService;
-use UiFoundation\Settings\SettingsAdministrationAccess;
-use Base3\Api\IMvcView;
-use Base3\Api\IRequest;
-use Base3\Session\Api\ISession;
-use Base3\Api\ISchemaProvider;
-use Base3\LinkTarget\Api\ILinkTargetService;
-use Base3\Settings\Api\ISettingsStore;
-use ParseFlow\Api\IParser;
-use ParseFlow\ParserSettings;
+use Base3\CoreFoundation\Api\IAssetResolver;
+use Base3\CoreFoundation\Api\IClassMap;
+use Base3\CoreFoundation\Api\IDisplay;
+use Base3\CoreFoundation\Authorization\Api\IAuthorizationService;
+use Base3\UiFoundation\Settings\SettingsAdministrationAccess;
+use Base3\CoreFoundation\Api\IMvcView;
+use Base3\CoreFoundation\Api\IRequest;
+use Base3\CoreFoundation\Session\Api\ISession;
+use Base3\CoreFoundation\Api\ISchemaProvider;
+use Base3\CoreFoundation\LinkTarget\Api\ILinkTargetService;
+use Base3\CoreFoundation\Settings\Api\ISettingsStore;
+use Base3\ParseFlow\Api\IParser;
+use Base3\ParseFlow\ParserSettings;
 use RuntimeException;
 use Throwable;
 
@@ -73,7 +73,7 @@ final class ParserAdminDisplay implements IDisplay {
 
 	public function getOutput(string $out = 'html', bool $final = false): string {
 		if (!SettingsAdministrationAccess::isAllowed(
-			$this->settingsAuthorization, \ParseFlow\SettingsTab\ParseflowparseradminSettingsTab::getName()
+			$this->settingsAuthorization, \Base3\ParseFlow\SettingsTab\ParseflowparseradminSettingsTab::getName()
 		)) {
 			http_response_code(403);
 			return '';

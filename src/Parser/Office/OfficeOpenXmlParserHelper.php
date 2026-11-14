@@ -14,11 +14,11 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Parser\Office;
+namespace Base3\ParseFlow\Parser\Office;
 
 use DOMDocument;
 use DOMXPath;
-use ParseFlow\Parser\Common\ParserValueHelper;
+use Base3\ParseFlow\Parser\Common\ParserValueHelper;
 use ZipArchive;
 
 class OfficeOpenXmlParserHelper {

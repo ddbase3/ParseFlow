@@ -14,10 +14,10 @@
  * https://github.com/ddbase3/ParseFlow
  **********************************************************************/
 
-namespace ParseFlow\Parser\Csv;
+namespace Base3\ParseFlow\Parser\Csv;
 
 use DOMDocument;
-use ParseFlow\Parser\Common\ParserValueHelper;
+use Base3\ParseFlow\Parser\Common\ParserValueHelper;
 
 class CsvParserHelper {
 

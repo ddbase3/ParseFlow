@@ -79,13 +79,13 @@ This implementation keeps parser interfaces, DTOs, source/input/output/target mo
 That means the parser API is part of this plugin:
 
 ```text
-ParseFlow\Api
-ParseFlow\Dto
-ParseFlow\Exception
-ParseFlow\Source
-ParseFlow\Input
-ParseFlow\Output
-ParseFlow\Target
+Base3\ParseFlow\Api
+Base3\ParseFlow\Dto
+Base3\ParseFlow\Exception
+Base3\ParseFlow\Source
+Base3\ParseFlow\Input
+Base3\ParseFlow\Output
+Base3\ParseFlow\Target
 ```
 
 This differs from the earlier architecture draft where some contracts were assigned to `MediaFoundation`.
@@ -198,13 +198,13 @@ ParseFlow
 The central service is:
 
 ```php
-ParseFlow\Api\IParserService
+Base3\ParseFlow\Api\IParserService
 ```
 
 Default implementation:
 
 ```php
-ParseFlow\Service\DefaultParserService
+Base3\ParseFlow\Service\DefaultParserService
 ```
 
 Main methods:
@@ -243,7 +243,7 @@ Instead, ParseFlow uses:
 $IClassMap->getInstancesByInterface(IParser::class)
 ```
 
-Every parser class must implement `ParseFlow\Api\IParser`.
+Every parser class must implement `Base3\ParseFlow\Api\IParser`.
 
 The technical parser name is returned by `getName()`.
 
@@ -293,11 +293,11 @@ A parser request describes the whole conversion.
 Example:
 
 ```php
-use ParseFlow\Dto\ParserRequest;
-use ParseFlow\Input\DocumentParserInput;
-use ParseFlow\Output\StringParserOutput;
-use ParseFlow\Source\FileParserSource;
-use ParseFlow\Target\ReturnParserTarget;
+use Base3\ParseFlow\Dto\ParserRequest;
+use Base3\ParseFlow\Input\DocumentParserInput;
+use Base3\ParseFlow\Output\StringParserOutput;
+use Base3\ParseFlow\Source\FileParserSource;
+use Base3\ParseFlow\Target\ReturnParserTarget;
 
 $request = new ParserRequest(
 	source: new FileParserSource('/tmp/input.docx'),
@@ -316,10 +316,10 @@ Sources describe where original data comes from.
 Common classes:
 
 ```text
-ParseFlow\Source\FileParserSource
-ParseFlow\Source\StringParserSource
-ParseFlow\Source\BinaryParserSource
-ParseFlow\Source\StreamParserSource
+Base3\ParseFlow\Source\FileParserSource
+Base3\ParseFlow\Source\StringParserSource
+Base3\ParseFlow\Source\BinaryParserSource
+Base3\ParseFlow\Source\StreamParserSource
 ```
 
 Examples:
@@ -340,11 +340,11 @@ Inputs describe how the source should be interpreted.
 Common classes:
 
 ```text
-ParseFlow\Input\AutoDetectParserInput
-ParseFlow\Input\DocumentParserInput
-ParseFlow\Input\ImageParserInput
-ParseFlow\Input\PlainTextParserInput
-ParseFlow\Input\StructuredParserInput
+Base3\ParseFlow\Input\AutoDetectParserInput
+Base3\ParseFlow\Input\DocumentParserInput
+Base3\ParseFlow\Input\ImageParserInput
+Base3\ParseFlow\Input\PlainTextParserInput
+Base3\ParseFlow\Input\StructuredParserInput
 ```
 
 Examples:
@@ -364,13 +364,13 @@ Outputs describe what semantic representation should be produced.
 Common classes:
 
 ```text
-ParseFlow\Output\StringParserOutput
-ParseFlow\Output\StructuredParserOutput
-ParseFlow\Output\FilesParserOutput
-ParseFlow\Output\ChunksParserOutput
-ParseFlow\Output\BinaryParserOutput
-ParseFlow\Output\StreamParserOutput
-ParseFlow\Output\ImageParserOutput
+Base3\ParseFlow\Output\StringParserOutput
+Base3\ParseFlow\Output\StructuredParserOutput
+Base3\ParseFlow\Output\FilesParserOutput
+Base3\ParseFlow\Output\ChunksParserOutput
+Base3\ParseFlow\Output\BinaryParserOutput
+Base3\ParseFlow\Output\StreamParserOutput
+Base3\ParseFlow\Output\ImageParserOutput
 ```
 
 Examples:
@@ -390,10 +390,10 @@ Targets describe where the final result should be delivered.
 Common classes:
 
 ```text
-ParseFlow\Target\ReturnParserTarget
-ParseFlow\Target\FileParserTarget
-ParseFlow\Target\DirectoryParserTarget
-ParseFlow\Target\StreamParserTarget
+Base3\ParseFlow\Target\ReturnParserTarget
+Base3\ParseFlow\Target\FileParserTarget
+Base3\ParseFlow\Target\DirectoryParserTarget
+Base3\ParseFlow\Target\StreamParserTarget
 ```
 
 Examples:
@@ -445,9 +445,9 @@ A parser route is one directed graph edge.
 Example:
 
 ```php
-use ParseFlow\Dto\ParserRoute;
-use ParseFlow\Dto\ParserRouteQuality;
-use ParseFlow\Dto\ParserState;
+use Base3\ParseFlow\Dto\ParserRoute;
+use Base3\ParseFlow\Dto\ParserRouteQuality;
+use Base3\ParseFlow\Dto\ParserState;
 
 new ParserRoute(
 	parserName: self::getName(),
@@ -634,7 +634,7 @@ The selected plan is useful for debugging and explaining why a route was chosen.
 ParseFlow includes an admin display:
 
 ```text
-ParseFlow\Display\ParserExplorerAdminDisplay
+Base3\ParseFlow\Display\ParserExplorerAdminDisplay
 ```
 
 Technical display name:
@@ -700,11 +700,11 @@ This keeps the UI responsive even when many parser routes are available.
 Request:
 
 ```php
-use ParseFlow\Dto\ParserRequest;
-use ParseFlow\Input\DocumentParserInput;
-use ParseFlow\Output\StringParserOutput;
-use ParseFlow\Source\FileParserSource;
-use ParseFlow\Target\ReturnParserTarget;
+use Base3\ParseFlow\Dto\ParserRequest;
+use Base3\ParseFlow\Input\DocumentParserInput;
+use Base3\ParseFlow\Output\StringParserOutput;
+use Base3\ParseFlow\Source\FileParserSource;
+use Base3\ParseFlow\Target\ReturnParserTarget;
 
 $request = new ParserRequest(
 	source: new FileParserSource('/tmp/input.docx'),
@@ -734,11 +734,11 @@ when a direct `html -> markdown` route already exists.
 ## Example: HTML string to Markdown
 
 ```php
-use ParseFlow\Dto\ParserRequest;
-use ParseFlow\Input\DocumentParserInput;
-use ParseFlow\Output\StringParserOutput;
-use ParseFlow\Source\StringParserSource;
-use ParseFlow\Target\ReturnParserTarget;
+use Base3\ParseFlow\Dto\ParserRequest;
+use Base3\ParseFlow\Input\DocumentParserInput;
+use Base3\ParseFlow\Output\StringParserOutput;
+use Base3\ParseFlow\Source\StringParserSource;
+use Base3\ParseFlow\Target\ReturnParserTarget;
 
 $request = new ParserRequest(
 	source: new StringParserSource($html),
@@ -754,12 +754,12 @@ $markdown = $result->payload->value ?? null;
 ## Example: PDF to text
 
 ```php
-use ParseFlow\Dto\ParserRequest;
-use ParseFlow\Dto\ParserStrategy;
-use ParseFlow\Input\DocumentParserInput;
-use ParseFlow\Output\StringParserOutput;
-use ParseFlow\Source\FileParserSource;
-use ParseFlow\Target\ReturnParserTarget;
+use Base3\ParseFlow\Dto\ParserRequest;
+use Base3\ParseFlow\Dto\ParserStrategy;
+use Base3\ParseFlow\Input\DocumentParserInput;
+use Base3\ParseFlow\Output\StringParserOutput;
+use Base3\ParseFlow\Source\FileParserSource;
+use Base3\ParseFlow\Target\ReturnParserTarget;
 
 $request = new ParserRequest(
 	source: new FileParserSource('/tmp/document.pdf'),
@@ -778,11 +778,11 @@ $result = $parserService->parse($request);
 ## Example: Structured JSON to file
 
 ```php
-use ParseFlow\Dto\ParserRequest;
-use ParseFlow\Input\DocumentParserInput;
-use ParseFlow\Output\StructuredParserOutput;
-use ParseFlow\Source\FileParserSource;
-use ParseFlow\Target\FileParserTarget;
+use Base3\ParseFlow\Dto\ParserRequest;
+use Base3\ParseFlow\Input\DocumentParserInput;
+use Base3\ParseFlow\Output\StructuredParserOutput;
+use Base3\ParseFlow\Source\FileParserSource;
+use Base3\ParseFlow\Target\FileParserTarget;
 
 $request = new ParserRequest(
 	source: new FileParserSource('/tmp/document.pdf'),
@@ -809,17 +809,17 @@ Example skeleton:
 ```php
 <?php declare(strict_types=1);
 
-namespace ParseFlow\Parser\Example;
+namespace Base3\ParseFlow\Parser\Example;
 
-use ParseFlow\Api\IParser;
-use ParseFlow\Dto\ParserPlanningContext;
-use ParseFlow\Dto\ParserPayload;
-use ParseFlow\Dto\ParserRoute;
-use ParseFlow\Dto\ParserRouteEvaluation;
-use ParseFlow\Dto\ParserRouteQuality;
-use ParseFlow\Dto\ParserState;
-use ParseFlow\Dto\ParserStepRequest;
-use ParseFlow\Dto\ParserStepResult;
+use Base3\ParseFlow\Api\IParser;
+use Base3\ParseFlow\Dto\ParserPlanningContext;
+use Base3\ParseFlow\Dto\ParserPayload;
+use Base3\ParseFlow\Dto\ParserRoute;
+use Base3\ParseFlow\Dto\ParserRouteEvaluation;
+use Base3\ParseFlow\Dto\ParserRouteQuality;
+use Base3\ParseFlow\Dto\ParserState;
+use Base3\ParseFlow\Dto\ParserStepRequest;
+use Base3\ParseFlow\Dto\ParserStepResult;
 
 class HtmlToMarkdownParser implements IParser {
 

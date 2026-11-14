@@ -1,18 +1,33 @@
 <?php declare(strict_types=1);
 
-namespace ParseFlow\Test\Display;
+/***********************************************************************
+ * This file is part of ParseFlow for BASE3 Framework.
+ *
+ * ParseFlow supplies graph-based parser services.
+ * It discovers parser capabilities and plans conversion routes.
+ * The parser workflow runs through existing module contracts.
+ *
+ * Developed by Daniel Dahme
+ * Licensed under GPL-3.0
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
+ *
+ * https://base3.de
+ ***********************************************************************/
 
-use Base3\Api\IClassMap;
-use Base3\Api\IMvcView;
-use Base3\Settings\Api\ISettingsStore;
-use ParseFlow\Display\ParserAdminDisplay;
-use ParseFlow\Dto\ParserRoute;
-use ParseFlow\Dto\ParserRouteQuality;
-use ParseFlow\Dto\ParserState;
-use ParseFlow\Test\Fixture\ParserClassMapFixture;
-use ParseFlow\Test\Fixture\ParserConfigurableProbeFixture;
-use ParseFlow\Test\Fixture\ParserProbeFixture;
-use ParseFlow\Test\Fixture\ParserSettingsStoreFixture;
+
+namespace Base3\ParseFlow\Test\Display;
+
+use Base3\CoreFoundation\Api\IClassMap;
+use Base3\CoreFoundation\Api\IMvcView;
+use Base3\CoreFoundation\Settings\Api\ISettingsStore;
+use Base3\ParseFlow\Display\ParserAdminDisplay;
+use Base3\ParseFlow\Dto\ParserRoute;
+use Base3\ParseFlow\Dto\ParserRouteQuality;
+use Base3\ParseFlow\Dto\ParserState;
+use Base3\ParseFlow\Test\Fixture\ParserClassMapFixture;
+use Base3\ParseFlow\Test\Fixture\ParserConfigurableProbeFixture;
+use Base3\ParseFlow\Test\Fixture\ParserProbeFixture;
+use Base3\ParseFlow\Test\Fixture\ParserSettingsStoreFixture;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
